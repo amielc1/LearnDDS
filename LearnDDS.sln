@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MissionMessages", "MissionM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MissionPublisher", "MissionPublisher\MissionPublisher.csproj", "{5FC2757D-2CD2-4D04-AADB-741F0B73554B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MissionSubscriber", "MissionSubscriber\MissionSubscriber.csproj", "{7D96106D-D648-4AB5-A62E-72A10731157A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{5FC2757D-2CD2-4D04-AADB-741F0B73554B}.Release|x64.Build.0 = Release|x64
 		{5FC2757D-2CD2-4D04-AADB-741F0B73554B}.Release|x86.ActiveCfg = Release|x86
 		{5FC2757D-2CD2-4D04-AADB-741F0B73554B}.Release|x86.Build.0 = Release|x86
+		{7D96106D-D648-4AB5-A62E-72A10731157A}.Debug|x64.ActiveCfg = Debug|x64
+		{7D96106D-D648-4AB5-A62E-72A10731157A}.Debug|x64.Build.0 = Debug|x64
+		{7D96106D-D648-4AB5-A62E-72A10731157A}.Debug|x86.ActiveCfg = Debug|x86
+		{7D96106D-D648-4AB5-A62E-72A10731157A}.Debug|x86.Build.0 = Debug|x86
+		{7D96106D-D648-4AB5-A62E-72A10731157A}.Release|x64.ActiveCfg = Release|x64
+		{7D96106D-D648-4AB5-A62E-72A10731157A}.Release|x64.Build.0 = Release|x64
+		{7D96106D-D648-4AB5-A62E-72A10731157A}.Release|x86.ActiveCfg = Release|x86
+		{7D96106D-D648-4AB5-A62E-72A10731157A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
