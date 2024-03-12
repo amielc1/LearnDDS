@@ -9,6 +9,7 @@ namespace MissionPublisher
     internal class Program
     {
         static string _topic = "MissionTopic";
+        private static int counter = 0; 
         static void Main(string[] args)
         {
             Console.WriteLine("Init DDS Sharp");
@@ -72,8 +73,8 @@ namespace MissionPublisher
             {
                 messageWriter.Write(new Mission()
                 {
-                    Key = 1,
-                    Name = "Mission 1",
+                    Key = counter++,
+                    Name = $"Mission {counter}",
                     Description = "General Mission",
                     Status = "Created"
                 });
