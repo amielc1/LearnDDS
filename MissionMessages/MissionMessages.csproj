@@ -1,0 +1,43 @@
+﻿<Project>
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net6.0;net7.0;</TargetFrameworks>
+    <LangVersion>7.3</LangVersion>
+    <Platforms>x64;x86</Platforms>
+    <Configurations>Debug;Release</Configurations>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <RuntimeIdentifiers>win-x64;win-x86;linux-x64;osx-x64;osx-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+
+  <ItemGroup>
+    <PackageReference Include="OpenDDSharp.IdlGenerator" Version="3.250.2" />
+    <PackageReference Include="OpenDDSharp" Version="3.250.2" />
+    <PackageReference Include="OpenDDSharp.Marshaller" Version="3.250.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <NativeWrapperWindows Include="$(IntermediateOutputPath)NativeProject\Release\MissionMessagesWrapper.dll" />
+    <ContentWithTargetPath Include="@(NativeWrapperWindows)" Visible="false" Condition="'$(IsWindows)'=='true'">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <TargetPath>MissionMessagesWrapper.dll</TargetPath>
+    </ContentWithTargetPath>
+
+    <NativeWrapperLinux Include="$(IntermediateOutputPath)NativeProject\libMissionMessagesWrapper.so" />
+    <ContentWithTargetPath Include="@(NativeWrapperLinux)" Visible="false" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <TargetPath>libMissionMessagesWrapper.so</TargetPath>
+    </ContentWithTargetPath>
+
+    <NativeWrapperOSX Include="$(IntermediateOutputPath)NativeProject\libMissionMessagesWrapper.dylib" />
+    <ContentWithTargetPath Include="@(NativeWrapperOSX)" Visible="false" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <TargetPath>libMissionMessagesWrapper.dylib</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+</Project>

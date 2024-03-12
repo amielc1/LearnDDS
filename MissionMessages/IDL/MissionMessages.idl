@@ -1,0 +1,14 @@
+// OpenDDSharp IDL example.
+// Adapt the type as desired.
+
+module MissionModule
+{
+    @topic
+    struct Mission
+    {
+        @key long Key;
+        string Name;
+        string Description;
+        string Status;
+    };
+};
