@@ -28,7 +28,7 @@ public class MissionReaderCreator : IDataReaderCreator
         }
 
         Console.WriteLine($"Create Topic {topic} with participant {_participant.DomainId} and MissionType {missionTypeName} ");
-        var _topic = _participant.CreateTopic(topic, missionTypeName);
+        _topic = _participant.CreateTopic(topic, missionTypeName);
         if (_topic == null)
         {
             throw new Exception("Could not create the message topic");
