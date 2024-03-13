@@ -18,7 +18,7 @@ namespace MissionSubscriber
 
             Console.WriteLine("Press a key to exit...");
             Console.Read();
-            Ace.Fini();
+            Ace.Fini(); 
         }
 
         private static void Importer_DataReceived(object sender, object e)
