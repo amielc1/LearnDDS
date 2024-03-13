@@ -1,4 +1,4 @@
-﻿namespace MissionSubscriber.Configuration;
+﻿namespace DDSService.Configuration;
 
 public class DdsConfiguration
 {

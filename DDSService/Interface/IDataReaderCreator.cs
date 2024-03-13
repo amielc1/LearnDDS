@@ -1,7 +1,7 @@
 ﻿using OpenDDSharp.DDS;
 using System;
 
-namespace MissionSubscriber.Interface;
+namespace DDSService.Interface;
 
 public interface IDataReaderCreator
 {

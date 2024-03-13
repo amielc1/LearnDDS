@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MissionSubscriber.Interface;
+namespace DDSService.Interface;
 
 public interface IOpenDdsService : IDisposable
 {

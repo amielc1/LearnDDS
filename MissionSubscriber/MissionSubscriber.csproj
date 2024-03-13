@@ -10,18 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenDDSharp" Version="3.250.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MissionMessages\MissionMessages.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="rtps.ini">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\DDSService\DDSService.csproj" />
   </ItemGroup>
 
 </Project>

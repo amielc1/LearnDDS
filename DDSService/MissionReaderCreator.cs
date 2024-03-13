@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using MissionModule;
-using MissionSubscriber.Interface;
+using DDSService.Interface;
+using MissionModule; 
 using OpenDDSharp.DDS;
 
-namespace MissionSubscriber
+namespace DDSService
 {
     public class MissionReaderCreator : IDataReaderCreator
     {

@@ -1,9 +1,7 @@
 ﻿using OpenDDSharp;
 using System;
-using System.Net.Security;
 using MissionModule;
 using MissionSubscriber.Interface;
-using System.Reflection;
 
 namespace MissionSubscriber
 {

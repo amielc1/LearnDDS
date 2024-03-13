@@ -1,11 +1,11 @@
 ﻿using System;
-using MissionSubscriber.Configuration;
-using MissionSubscriber.Interface;
+using DDSService.Configuration;
+using DDSService.Interface; 
 using OpenDDSharp;
 using OpenDDSharp.DDS;
 using OpenDDSharp.OpenDDS.DCPS;
 
-namespace MissionSubscriber;
+namespace DDSService;
 
 public class OpenDdsService : IOpenDdsService
 {
