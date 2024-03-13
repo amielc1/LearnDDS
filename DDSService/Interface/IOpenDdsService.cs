@@ -5,6 +5,6 @@ namespace DDSService.Interface;
 public interface IOpenDdsService : IDisposable
 {
     event EventHandler<object> DataReceived;
-    void Subscribe();
+    void Subscribe(string topic);
     void UnSubscribe();
 }

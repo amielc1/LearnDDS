@@ -64,11 +64,11 @@ public class OpenDdsService : IOpenDdsService
             throw;
         }
     }
-    public void Subscribe()
+    public void Subscribe(string topic)
     {
         try
         {
-            _dataReader = _dataReaderCreator.CreateDataReader(_participant, _ddsConfiguration.Topic);
+            _dataReader = _dataReaderCreator.CreateDataReader(_participant, topic);
             _dataReaderCreator.DataReceived += (s, e) => DataReceived(s, e);
         }
         catch (Exception e)

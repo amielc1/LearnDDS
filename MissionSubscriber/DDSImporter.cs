@@ -21,7 +21,7 @@ public class DDSImporter : IImporter
     }
     public void Start()
     {
-        _openDdsService.Subscribe();
+        _openDdsService.Subscribe(_config.Topic);
         _openDdsService.DataReceived += OnDataReceived;
     }
 
