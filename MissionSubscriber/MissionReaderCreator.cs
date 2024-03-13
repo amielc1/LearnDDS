@@ -1,98 +1,128 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using MissionModule;
 using MissionSubscriber.Interface;
 using OpenDDSharp.DDS;
 
-namespace MissionSubscriber;
-
-public class MissionReaderCreator : IDataReaderCreator
+namespace MissionSubscriber
 {
-    public event EventHandler<object> DataReceived = delegate { };
-    private Subscriber _subscriber;
-    private DataReader _dataReader;
-    private MissionDataReader _missionDataReader;
-    private Topic _topic;
-    private DomainParticipant _participant;
-    public DataReader CreateDataReader(DomainParticipant participant, string topic)
+    public class MissionReaderCreator : IDataReaderCreator
     {
-        _participant = participant;
-        MissionTypeSupport missionTypeSupport = new();
-        var missionTypeName = missionTypeSupport.GetTypeName();
-        ReturnCode result = missionTypeSupport.RegisterType(_participant, missionTypeName);
-        Console.WriteLine($"Register participant {_participant.DomainId}, with MissionType {missionTypeName} ");
-        if (result != ReturnCode.Ok)
+        public event EventHandler<object> DataReceived = delegate { };
+        private Subscriber _subscriber;
+        private DomainParticipant _participant;
+        private CancellationTokenSource _cancellationTokenSource = new();
+
+        public DataReader CreateDataReader(DomainParticipant participant, string topic)
         {
-            throw new Exception("Could not register type: " + result.ToString());
-        }
-
-        Console.WriteLine($"Create Topic {topic} with participant {_participant.DomainId} and MissionType {missionTypeName} ");
-        _topic = _participant.CreateTopic(topic, missionTypeName);
-        if (_topic == null)
-        {
-            throw new Exception("Could not create the message topic");
-        }
-
-        Console.WriteLine($"Create Subscriber on participant {_participant.DomainId} ");
-        _subscriber = _participant.CreateSubscriber();
-        if (_subscriber == null)
-        {
-            throw new Exception("Could not create the subscriber");
-        }
-
-        Console.WriteLine($"Create DataReader on participant {participant.DomainId} ");
-        _dataReader = _subscriber.CreateDataReader(_topic);
-        if (_dataReader == null)
-        {
-            throw new Exception("Could not create the  DataReader");
-        }
-
-        Console.WriteLine($"Wrap DataReader with MissionDataReader helper class");
-        _missionDataReader = new(_dataReader);
-
-        Task.Factory.StartNew(() => { WaitForEvents(_missionDataReader); });
-
-        return _missionDataReader;
-    }
-
-    public void UnSubscribe()
-    {
-        _participant.DeleteSubscriber(_subscriber);
-    }
-
-    private void WaitForEvents(MissionDataReader missionDataReader)
-    {
-        while (true)
-        {
-            StatusMask mask = missionDataReader.StatusChanges;
-            if ((mask & StatusKind.DataAvailableStatus) != 0)
+            try
             {
-                List<Mission> receivedData = new();
-                List<SampleInfo> receivedInfo = new();
-                var result = missionDataReader.Take(receivedData, receivedInfo);
+                _participant = participant;
+                RegisterType(participant, topic);
+                CreateSubscriber(participant);
+                var dataReader = CreateAndWrapDataReader(topic);
 
-                if (result == ReturnCode.Ok)
-                {
-                    bool messageReceived = false;
-                    for (int i = 0; i < receivedData.Count; i++)
-                    {
-                        if (receivedInfo[i].ValidData)
-                        {
-                            var mission = new Mission()
-                            {
-                                Key = receivedData[i].Key,
-                                Name = receivedData[i].Name,
-                                Description = receivedData[i].Description,
-                                Status = receivedData[i].Status
-                            };
-                            DataReceived.Invoke(this, mission);
-                        }
-                    }
-                }
+                // Start listening for events in a background task
+                Task.Run(() => WaitForEvents(dataReader, _cancellationTokenSource.Token));
+                return dataReader;
+            }
+            catch (Exception ex)
+            {
+                LogError($"Error creating data reader: {ex.Message}");
+                throw;
+            }
+        }
+
+        private void RegisterType(DomainParticipant participant, string topic)
+        {
+            var missionTypeSupport = new MissionTypeSupport();
+            var missionTypeName = missionTypeSupport.GetTypeName();
+            var result = missionTypeSupport.RegisterType(participant, missionTypeName);
+
+            Log($"Register participant {participant.DomainId}, with MissionType {missionTypeName}");
+            if (result != ReturnCode.Ok)
+            {
+                throw new Exception($"Could not register type: {result}");
             }
 
-            System.Threading.Thread.Sleep(100);
+            var topicInstance = participant.CreateTopic(topic, missionTypeName);
+            Log($"Create Topic {topic} with participant {participant.DomainId} and MissionType {missionTypeName}");
+            if (topicInstance == null)
+            {
+                throw new Exception("Could not create the message topic");
+            }
+        }
+
+        private void CreateSubscriber(DomainParticipant participant)
+        {
+            _subscriber = participant.CreateSubscriber();
+            Log($"Create Subscriber on participant {participant.DomainId}");
+            if (_subscriber == null)
+            {
+                throw new Exception("Could not create the subscriber");
+            }
+        }
+
+        private MissionDataReader CreateAndWrapDataReader(string topic)
+        {
+            var dataReader = _subscriber.CreateDataReader(_participant.LookupTopicDescription(topic));
+            Log($"Create DataReader on participant {_participant.DomainId}");
+            if (dataReader == null)
+            {
+                throw new Exception("Could not create the DataReader");
+            }
+
+            var missionDataReader = new MissionDataReader(dataReader);
+            Log("Wrap DataReader with MissionDataReader helper class");
+            return missionDataReader;
+        }
+
+        public void UnSubscribe()
+        {
+            _cancellationTokenSource.Cancel();
+            _participant.DeleteSubscriber(_subscriber);
+        }
+
+        private async Task WaitForEvents(MissionDataReader missionDataReader, CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                ProcessDataEvents(missionDataReader);
+                await Task.Delay(100);
+            }
+        }
+
+        private void ProcessDataEvents(MissionDataReader missionDataReader)
+        {
+            var mask = missionDataReader.StatusChanges;
+            if ((mask & StatusKind.DataAvailableStatus) == 0) return;
+
+            var receivedData = new List<Mission>();
+            var receivedInfo = new List<SampleInfo>();
+            var result = missionDataReader.Take(receivedData, receivedInfo);
+
+            if (result == ReturnCode.Ok)
+            {
+                foreach (var info in receivedInfo)
+                {
+                    if (!info.ValidData) continue;
+                    var index = receivedInfo.IndexOf(info);
+                    var mission = receivedData[index];
+                    DataReceived?.Invoke(this, mission);
+                }
+            }
+        }
+
+        private void Log(string message)
+        {
+            Console.WriteLine(message);
+        }
+
+        private void LogError(string message)
+        {
+            Console.Error.WriteLine(message);
         }
     }
 }

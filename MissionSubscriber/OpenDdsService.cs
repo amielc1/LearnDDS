@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Reflection;
-using System.Runtime.Intrinsics.Arm;
+using MissionSubscriber.Configuration;
 using MissionSubscriber.Interface;
 using OpenDDSharp;
 using OpenDDSharp.DDS;
@@ -15,21 +14,21 @@ public class OpenDdsService : IOpenDdsService
     private DomainParticipant _participant;
     private DomainParticipantFactory _dpf;
     private DataReader _dataReader;
-    private string _topic;
+    private DdsConfiguration _ddsConfiguration;
 
-    public OpenDdsService(IDataReaderCreator dataReaderCreator)
+    public OpenDdsService(IDataReaderCreator dataReaderCreator, DdsConfiguration ddsConfiguration)
     {
         _dataReaderCreator = dataReaderCreator;
-        //read topic from configuration ;  
-        _topic = "MissionTopic";
+        _ddsConfiguration = ddsConfiguration;
         Init();
     }
 
     private DomainParticipant CreateParticipant()
     {
-        _dpf = ParticipantService.Instance.GetDomainParticipantFactory("-DCPSConfigFile", "rtps.ini");
-        Console.WriteLine("Create DomainParticipant (42)");
-        DomainParticipant participant = _dpf.CreateParticipant(42);
+
+        _dpf = ParticipantService.Instance.GetDomainParticipantFactory(_ddsConfiguration.DCPSConfigFile, _ddsConfiguration.rtps);
+        Console.WriteLine($"Create DomainParticipant {_ddsConfiguration.DomainId}");
+        DomainParticipant participant = _dpf.CreateParticipant(_ddsConfiguration.DomainId);
         if (participant == null)
         {
             throw new Exception("Could not create the participant");
@@ -39,24 +38,56 @@ public class OpenDdsService : IOpenDdsService
 
     private void Init()
     {
-        Ace.Init();
-        _participant = CreateParticipant(); 
+        try
+        {
+            Ace.Init();
+            _participant = CreateParticipant();
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
+            throw;
+        }
     }
 
     public void Dispose()
     {
-        _participant.DeleteContainedEntities();
-        _dpf.DeleteParticipant(_participant);
-        ParticipantService.Instance.Shutdown();
+        try
+        {
+            _participant.DeleteContainedEntities();
+            _dpf.DeleteParticipant(_participant);
+            ParticipantService.Instance.Shutdown();
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
+            throw;
+        }
     }
     public void Subscribe()
     {
-        _dataReader = _dataReaderCreator.CreateDataReader(_participant, _topic);
-        _dataReaderCreator.DataReceived += (s, e) => DataReceived(s, e);
+        try
+        {
+            _dataReader = _dataReaderCreator.CreateDataReader(_participant, _ddsConfiguration.Topic);
+            _dataReaderCreator.DataReceived += (s, e) => DataReceived(s, e);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
+            throw;
+        }
     }
 
     public void UnSubscribe()
     {
-        _dataReaderCreator.UnSubscribe();
+        try
+        {
+            _dataReaderCreator.UnSubscribe();
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
+            throw;
+        }
     }
 }
