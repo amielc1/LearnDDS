@@ -1,4 +1,12 @@
-Start form [Getting Started](https://www.openddsharp.com/articles/getting_started.html "‌"),  but make sure to install all the [Requirements](https://www.openddsharp.com/articles/getting_started.html#requirements "‌").
+[![Build Status](https://github.com/amielc1/LearnDDS/actions/workflows/main.yml/badge.svg)](https://github.com/amielc1/LearnDDS/actions/workflows/main.yml)
+
+#  **Getting Started**
+
+##
+
+![Snag_133ad4b0](https://github.com/amielc1/LearnDDS/assets/2409265/7edbe220-b822-4bd4-942e-8c05aedef895)
+
+Start from [Getting Started](https://www.openddsharp.com/articles/getting_started.html "‌"),  but make sure to install all the [Requirements](https://www.openddsharp.com/articles/getting_started.html#requirements "‌").
 
 I had to install “Desktop Development with C++” via VS installer 
 
