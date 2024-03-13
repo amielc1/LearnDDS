@@ -1,5 +1,4 @@
-﻿using OpenDDSharp;
-using System;
+﻿using System;
 using MissionModule;
 using MissionSubscriber.Interface;
 
@@ -18,7 +17,6 @@ namespace MissionSubscriber
 
             Console.WriteLine("Press a key to exit...");
             Console.Read();
-            Ace.Fini();
         }
 
         private static void Importer_DataReceived(object sender, object e)

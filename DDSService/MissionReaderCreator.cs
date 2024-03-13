@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using DDSService.Interface;
-using MissionModule; 
+﻿using DDSService.Interface;
+using MissionModule;
 using OpenDDSharp.DDS;
 
 namespace DDSService
@@ -15,7 +11,7 @@ namespace DDSService
         private DomainParticipant _participant;
         private CancellationTokenSource _cancellationTokenSource = new();
 
-        public DataReader CreateDataReader(DomainParticipant participant, string topic)
+        public DataReader Subscribe(DomainParticipant participant, string topic)
         {
             try
             {

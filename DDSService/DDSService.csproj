@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MessageBroker.Core\MessageBroker.Core.csproj" />
     <ProjectReference Include="..\MissionMessages\MissionMessages.csproj" />
   </ItemGroup>
 

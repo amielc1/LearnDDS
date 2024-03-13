@@ -1,7 +1,9 @@
 ﻿using System;
 using DDSService;
 using DDSService.Configuration;
-using DDSService.Interface; 
+using DDSService.Interface;
+using DDSService.MessageBroker.DDS;
+using MessageBroker.Core.Interfaces;
 using MissionSubscriber.Interface;
 
 namespace MissionSubscriber;
@@ -9,31 +11,25 @@ namespace MissionSubscriber;
 public class DDSImporter : IImporter
 {
     private readonly IDataReaderCreator _creator;
-    private readonly IOpenDdsService _openDdsService;
+    private readonly IDdsService _ddsService;
     private readonly DdsConfiguration _config;
+    private readonly ISubscriber _subscriber;
     public event EventHandler<object> DataReceived = delegate { };
 
     public DDSImporter()
     {
         _creator = new MissionReaderCreator();
         _config = new DdsConfiguration();
-        _openDdsService = new OpenDdsService(_creator, _config);
+        _ddsService = new OpenDdsService(_config);
+        _subscriber = new DdsSubscriber(_ddsService, _creator);
     }
     public void Start()
     {
-        _openDdsService.Subscribe(_config.Topic);
-        _openDdsService.DataReceived += OnDataReceived;
-    }
+        _subscriber.Subscribe(_config.Topic, (s, e) => DataReceived(s, e));
+    } 
 
     public void Stop()
     {
-        _openDdsService.UnSubscribe();
-        _openDdsService.DataReceived -= OnDataReceived;
-
-    }
-
-    private void OnDataReceived(object sender, object eventArgs)
-    {
-        DataReceived?.Invoke(sender, eventArgs);
+        _subscriber.UnSubscribe();
     }
 }

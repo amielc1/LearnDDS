@@ -1,47 +1,36 @@
-﻿using System;
-using DDSService.Configuration;
-using DDSService.Interface; 
+﻿using DDSService.Configuration;
+using DDSService.Interface;
 using OpenDDSharp;
 using OpenDDSharp.DDS;
 using OpenDDSharp.OpenDDS.DCPS;
 
 namespace DDSService;
 
-public class OpenDdsService : IOpenDdsService
+public class OpenDdsService : IDdsService
 {
-    public event EventHandler<object> DataReceived = delegate { };
-    private IDataReaderCreator _dataReaderCreator;
+    private readonly DdsConfiguration _ddsConfiguration;
     private DomainParticipant _participant;
     private DomainParticipantFactory _dpf;
-    private DataReader _dataReader;
-    private DdsConfiguration _ddsConfiguration;
 
-    public OpenDdsService(IDataReaderCreator dataReaderCreator, DdsConfiguration ddsConfiguration)
+    public OpenDdsService(DdsConfiguration ddsConfiguration)
     {
-        _dataReaderCreator = dataReaderCreator;
         _ddsConfiguration = ddsConfiguration;
-        Init();
+        Ace.Init();
     }
 
-    private DomainParticipant CreateParticipant()
-    {
-
-        _dpf = ParticipantService.Instance.GetDomainParticipantFactory(_ddsConfiguration.DCPSConfigFile, _ddsConfiguration.rtps);
-        Console.WriteLine($"Create DomainParticipant {_ddsConfiguration.DomainId}");
-        DomainParticipant participant = _dpf.CreateParticipant(_ddsConfiguration.DomainId);
-        if (participant == null)
-        {
-            throw new Exception("Could not create the participant");
-        }
-        return participant;
-    }
-
-    private void Init()
+    public DomainParticipant CreateParticipant()
     {
         try
         {
-            Ace.Init();
-            _participant = CreateParticipant();
+            _dpf = ParticipantService.Instance.GetDomainParticipantFactory(_ddsConfiguration.DCPSConfigFile, _ddsConfiguration.rtps);
+            Console.WriteLine($"Create DomainParticipant {_ddsConfiguration.DomainId}");
+            _participant = _dpf.CreateParticipant(_ddsConfiguration.DomainId);
+            if (_participant == null)
+            {
+                throw new Exception("Could not create the participant");
+            }
+
+            return _participant;
         }
         catch (Exception e)
         {
@@ -57,32 +46,7 @@ public class OpenDdsService : IOpenDdsService
             _participant.DeleteContainedEntities();
             _dpf.DeleteParticipant(_participant);
             ParticipantService.Instance.Shutdown();
-        }
-        catch (Exception e)
-        {
-            Console.Error.WriteLine(e);
-            throw;
-        }
-    }
-    public void Subscribe(string topic)
-    {
-        try
-        {
-            _dataReader = _dataReaderCreator.CreateDataReader(_participant, topic);
-            _dataReaderCreator.DataReceived += (s, e) => DataReceived(s, e);
-        }
-        catch (Exception e)
-        {
-            Console.Error.WriteLine(e);
-            throw;
-        }
-    }
-
-    public void UnSubscribe()
-    {
-        try
-        {
-            _dataReaderCreator.UnSubscribe();
+            Ace.Fini();
         }
         catch (Exception e)
         {
