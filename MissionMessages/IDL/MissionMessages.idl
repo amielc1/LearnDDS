@@ -3,12 +3,29 @@
 
 module MissionModule
 {
-    @topic
-    struct Mission
-    {
-        @key long Key;
-        string Name;
-        string Description;
-        string Status;
-    };
+	@topic
+	struct Mission
+	{
+		@key long Key;
+		string Name;
+		string Description;
+		string Status;
+	};
+
+	@topic
+	struct Location
+	{
+		@key long Key;
+		double Latitude;
+		double Longtitude;
+		double Altitude;
+	};
+
+	@topic
+	struct FiringCommand
+	{
+		@key long Key;
+		long TargetId;
+		long WeaponType;
+	}; 
 };

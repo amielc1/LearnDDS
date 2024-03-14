@@ -1277,4 +1277,2511 @@ namespace MissionModule
     }
     #endregion
 
+    #region Location Definitions
+    public class Location
+    {
+        #region Constants
+        internal const string API_DLL = "MissionMessagesWrapper";
+        #endregion
+
+        #region Fields
+        Int32 _Key;
+        Double _Latitude;
+        Double _Longtitude;
+        Double _Altitude;
+        #endregion
+
+        #region Properties
+        public Int32 Key
+        {
+            get { return _Key; }
+            set { _Key = value; }
+        }
+
+        public Double Latitude
+        {
+            get { return _Latitude; }
+            set { _Latitude = value; }
+        }
+
+        public Double Longtitude
+        {
+            get { return _Longtitude; }
+            set { _Longtitude = value; }
+        }
+
+        public Double Altitude
+        {
+            get { return _Altitude; }
+            set { _Altitude = value; }
+        }
+        #endregion 
+
+        #region Constructors
+        public Location()
+        {
+            _Key = 0;
+            _Latitude = 0;
+            _Longtitude = 0;
+            _Altitude = 0;
+        }
+        #endregion
+
+        #region Methods
+        internal void MemberwiseCopy(Location source)
+        {
+            Key = source.Key;
+            Latitude = source.Latitude;
+            Longtitude = source.Longtitude;
+            Altitude = source.Altitude;
+        }
+
+        #endregion
+    }
+
+	public class LocationTypeSupport
+    {
+        #region Field
+        private IntPtr _native;
+        #endregion
+
+        #region Constructors
+        public LocationTypeSupport()
+        {
+            _native = LocationTypeSupportNew();
+        }
+        #endregion
+
+        #region Methods
+        public string GetTypeName()
+        {
+            return Marshal.PtrToStringAnsi(GetTypeName(_native));
+        }
+
+        public ReturnCode RegisterType(DomainParticipant dp, string typeName)
+        {
+            return (ReturnCode)RegisterType(_native, dp.ToNative(), typeName);
+        }
+
+        public ReturnCode UnregisterType(DomainParticipant dp, string typeName)
+        {            
+            return (ReturnCode)UnregisterType(_native, dp.ToNative(), typeName);
+        }
+        
+        public static string EncodeToString(Location sample)
+        {
+            return JsonSerializer.Serialize(sample, new JsonSerializerOptions
+            {
+                AllowTrailingCommas = false,
+                Converters =
+                {
+                    new JsonStringEnumConverter(),
+                    new OctetArrayConverter(),
+                    new FloatJsonConverter(),
+                    new DoubleJsonConverter(),
+                    new DecimalJsonConverter(),
+                }
+            });
+        }
+        
+        public static Location DecodeFromString(string str)
+        {
+            return JsonSerializer.Deserialize<Location>(str, new JsonSerializerOptions
+            {
+                AllowTrailingCommas = true,
+                Converters =
+                {
+                    new JsonStringEnumConverter(),
+                    new OctetArrayConverter(),
+                    new FloatJsonConverter(),
+                    new DoubleJsonConverter(),
+                    new DecimalJsonConverter(),
+                }
+            });
+        }
+        #endregion
+
+        #region PInvoke
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationTypeSupport_new", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr LocationTypeSupportNew();
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationTypeSupport_GetTypeName", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Auto, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        private static extern IntPtr GetTypeName(IntPtr native);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationTypeSupport_RegisterType", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        private static extern int RegisterType(IntPtr native, IntPtr dp, string typeName);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationTypeSupport_UnregisterType", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        private static extern int UnregisterType(IntPtr native, IntPtr dp, string typeName);
+        #endregion
+    }
+
+    public class LocationDataWriter : DataWriter
+    {
+        #region Fields
+        private readonly IntPtr _native;
+        #endregion
+
+        #region Constructors
+        public LocationDataWriter(DataWriter dw) : base(dw.ToNative())
+        {
+			IntPtr ptr = base.ToNative();
+            _native = Narrow(ptr);
+        }
+        #endregion
+
+        #region Methods
+        public InstanceHandle RegisterInstance(Location instance)
+        {
+            InstanceHandle ret = InstanceHandle.HandleNil;
+
+            var str = LocationTypeSupport.EncodeToString(instance);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = RegisterInstance(_native, json_data);
+
+            return ret;
+        }
+
+        public InstanceHandle RegisterInstance(Location instance, Timestamp timestamp)
+        {
+            InstanceHandle ret = InstanceHandle.HandleNil;
+
+            var str = LocationTypeSupport.EncodeToString(instance);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = RegisterInstanceTimestamp(_native, json_data, timestamp);
+
+            return ret;
+        }
+
+        public ReturnCode UnregisterInstance(Location data)
+        {
+            InstanceHandle handle = LookupInstance(data);
+            if (handle == InstanceHandle.HandleNil) 
+            {
+                return ReturnCode.PreconditionNotMet;
+            }
+
+            var str = LocationTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+	        return (ReturnCode)UnregisterInstance(_native, json_data, handle);
+        }
+
+		public ReturnCode UnregisterInstance(Location data, InstanceHandle handle)
+        {
+            var str = LocationTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            return (ReturnCode)UnregisterInstance(_native, json_data, handle);
+        }
+
+        public ReturnCode UnregisterInstance(Location data, InstanceHandle handle, Timestamp timestamp)
+        {
+            var str = LocationTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            return (ReturnCode)UnregisterInstanceTimestamp(_native, json_data, handle, timestamp);
+        }
+
+        public ReturnCode Write(Location data)
+        {
+            return Write(data, InstanceHandle.HandleNil);
+        }
+
+        public ReturnCode Write(Location data, InstanceHandle handle)
+        {
+            if (data == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+
+            var str = LocationTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = (ReturnCode)Write(_native, json_data, handle);
+
+            return ret;
+        }
+
+        public ReturnCode Write(Location data, InstanceHandle handle, Timestamp timestamp)
+        {
+            if (data == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+
+            var str = LocationTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = (ReturnCode)WriteWithTimestamp(_native, json_data, handle, timestamp);
+
+            return ret;
+        }
+
+        public ReturnCode Dispose(Location data)
+        {
+            return Dispose(data, InstanceHandle.HandleNil);
+        }
+
+		public ReturnCode Dispose(Location data, InstanceHandle handle)
+        {
+            if (data == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+
+            var str = LocationTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = (ReturnCode)Dispose(_native, json_data, handle);
+            
+            return ret;
+        }
+
+        public ReturnCode Dispose(Location data, InstanceHandle handle, Timestamp timestamp)
+        {
+            if (data == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+
+            var str = LocationTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = (ReturnCode)DisposeTimestamp(_native, json_data, handle, timestamp);
+
+            return ret;
+        }
+
+        public ReturnCode GetKeyValue(Location data, InstanceHandle handle)
+        {
+            if (data == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (handle == InstanceHandle.HandleNil)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+            
+            var str = LocationTypeSupport.EncodeToString(data);
+            var ptr = MarshalHelper.NativeUtf8FromString(str);
+            ret = (ReturnCode)GetKeyValue(_native, ref ptr, handle);
+
+            if (ret == ReturnCode.Ok)
+            {
+                var json_data = MarshalHelper.StringFromNativeUtf8(ptr) ?? string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(json_data))
+                {
+                    var sample = LocationTypeSupport.DecodeFromString(json_data);
+
+                    data.MemberwiseCopy(sample);
+                }
+
+                MarshalHelper.ReleaseNativeStringPointer(ptr);
+            }
+
+            return ret;
+        }
+
+        public InstanceHandle LookupInstance(Location instance)
+        {
+            InstanceHandle ret = InstanceHandle.HandleNil;
+                        
+            var str = LocationTypeSupport.EncodeToString(instance);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = LookupInstance(_native, json_data);
+
+            return ret;
+        }
+        #endregion
+
+        #region PInvoke
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataWriter_Narrow", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr Narrow(IntPtr dw);
+        
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataWriter_Write_Json", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        private static extern int Write(IntPtr dw, [In] IntPtr jsonData, int handle);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataWriter_WriteWithTimestamp_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int WriteWithTimestamp(IntPtr dw, [In] IntPtr jsonData, int handle, [MarshalAs(UnmanagedType.Struct), In] Timestamp timestamp);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataWriter_RegisterInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int RegisterInstance(IntPtr dw, [In] IntPtr jsonData);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataWriter_RegisterInstanceTimestamp_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int RegisterInstanceTimestamp(IntPtr dw, [In] IntPtr jsonData, [MarshalAs(UnmanagedType.Struct), In] Timestamp timestamp);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataWriter_UnregisterInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int UnregisterInstance(IntPtr dw, [In] IntPtr jsonData, int handle);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataWriter_UnregisterInstanceTimestamp_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int UnregisterInstanceTimestamp(IntPtr dw, [In] IntPtr jsonData, int handle, [MarshalAs(UnmanagedType.Struct), In] Timestamp timestamp);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataWriter_LookupInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int LookupInstance(IntPtr dw, [In] IntPtr jsonData);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataWriter_Dispose_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int Dispose(IntPtr dw, [In] IntPtr jsonData, int handle);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataWriter_DisposeTimestamp_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int DisposeTimestamp(IntPtr dw, [In] IntPtr jsonData, int handle, [MarshalAs(UnmanagedType.Struct), In] Timestamp timestamp);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataWriter_GetKeyValue_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int GetKeyValue(IntPtr dw, [In, Out] ref IntPtr json_data, int handle);
+        #endregion
+    }
+
+    public class LocationDataReader : DataReader
+    {
+        #region Fields
+        private readonly IntPtr _native;
+        #endregion
+
+        #region Constructors
+        public LocationDataReader(DataReader dr) : base(dr.ToNative())
+        {
+			IntPtr ptr = base.ToNative();
+            _native = Narrow(ptr);
+        }
+        #endregion
+
+        #region Methods
+        public ReturnCode Read(List<Location> receivedData, List<SampleInfo> receivedInfo)
+        {
+            return Read(receivedData, receivedInfo, ResourceLimitsQosPolicy.LengthUnlimited, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+        public ReturnCode Read(List<Location> receivedData, List<SampleInfo> receivedInfo, int maxSamples)
+        {
+            return Read(receivedData, receivedInfo, maxSamples, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+        public ReturnCode Read(List<Location> receivedData, List<SampleInfo> receivedInfo, int maxSamples, ReadCondition condition)
+        {
+            if (condition == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)ReadWithCondition(_native, ref rd, ref ri, maxSamples, condition.ToNative());
+            
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(LocationTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode Read(List<Location> receivedData, List<SampleInfo> receivedInfo, int maxSamples, SampleStateMask sampleStates, ViewStateMask viewStates, InstanceStateMask instanceStates)
+        {
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)Read(_native, ref rd, ref ri, maxSamples, sampleStates, viewStates, instanceStates);            
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(LocationTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode Take(List<Location> receivedData, List<SampleInfo> receivedInfo)
+        {
+            return Take(receivedData, receivedInfo, ResourceLimitsQosPolicy.LengthUnlimited, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+        public ReturnCode Take(List<Location> receivedData, List<SampleInfo> receivedInfo, int maxSamples)
+        {
+            return Take(receivedData, receivedInfo, maxSamples, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+        public ReturnCode Take(List<Location> receivedData, List<SampleInfo> receivedInfo, int maxSamples, ReadCondition condition)
+        {
+            if (condition == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)TakeWithCondition(_native, ref rd, ref ri, maxSamples, condition.ToNative());            
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(LocationTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode Take(List<Location> receivedData, List<SampleInfo> receivedInfo, int maxSamples, SampleStateMask sampleStates, ViewStateMask viewStates, InstanceStateMask instanceStates)
+        {
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)Take(_native, ref rd, ref ri, maxSamples, sampleStates, viewStates, instanceStates);
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(LocationTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode ReadInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle)
+        {
+            return ReadInstance(receivedData, receivedInfo, handle, ResourceLimitsQosPolicy.LengthUnlimited, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode ReadInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle, int maxSamples)
+        {
+            return ReadInstance(receivedData, receivedInfo, handle, maxSamples, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode ReadInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle, int maxSamples, ReadCondition condition)
+        {
+            if (condition == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)ReadInstanceWithCondition(_native, ref rd, ref ri, (int)handle, maxSamples, condition.ToNative());
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(LocationTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode ReadInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle, int maxSamples, SampleStateMask sampleStates, ViewStateMask viewStates, InstanceStateMask instanceStates)
+        {
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)ReadInstance(_native, ref rd, ref ri, handle, maxSamples, sampleStates, viewStates, instanceStates);
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(LocationTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode TakeInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle)
+        {
+            return TakeInstance(receivedData, receivedInfo, handle, ResourceLimitsQosPolicy.LengthUnlimited, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode TakeInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle, int maxSamples)
+        {
+            return TakeInstance(receivedData, receivedInfo, handle, maxSamples, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode TakeInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle, int maxSamples, ReadCondition condition)
+        {
+            if (condition == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)TakeInstanceWithCondition(_native, ref rd, ref ri, (int)handle, maxSamples, condition.ToNative());
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(LocationTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode TakeInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle, int maxSamples, SampleStateMask sampleStates, ViewStateMask viewStates, InstanceStateMask instanceStates)
+        {
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)TakeInstance(_native, ref rd, ref ri, handle, maxSamples, sampleStates, viewStates, instanceStates);
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(LocationTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode ReadNextInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle)
+        {
+            return ReadNextInstance(receivedData, receivedInfo, previousHandle, ResourceLimitsQosPolicy.LengthUnlimited, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode ReadNextInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle, int maxSamples)
+        {
+            return ReadNextInstance(receivedData, receivedInfo, previousHandle, maxSamples, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode ReadNextInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle, int maxSamples, ReadCondition condition)
+        {
+            if (condition == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)ReadNextInstanceWithCondition(_native, ref rd, ref ri, previousHandle, maxSamples, condition.ToNative());
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(LocationTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode ReadNextInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle, int maxSamples, SampleStateMask sampleStates, ViewStateMask viewStates, InstanceStateMask instanceStates)
+        {
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)ReadNextInstance(_native, ref rd, ref ri, previousHandle, maxSamples, sampleStates, viewStates, instanceStates);
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(LocationTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode TakeNextInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle)
+        {
+            return TakeNextInstance(receivedData, receivedInfo, previousHandle, ResourceLimitsQosPolicy.LengthUnlimited, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode TakeNextInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle, int maxSamples)
+        {
+            return TakeNextInstance(receivedData, receivedInfo, previousHandle, maxSamples, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode TakeNextInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle, int maxSamples, ReadCondition condition)
+        {
+            if (condition == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)TakeNextInstanceWithCondition(_native, ref rd, ref ri, previousHandle, maxSamples, condition.ToNative());
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(LocationTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode TakeNextInstance(List<Location> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle, int maxSamples, SampleStateMask sampleStates, ViewStateMask viewStates, InstanceStateMask instanceStates)
+        {
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)TakeNextInstance(_native, ref rd, ref ri, previousHandle, maxSamples, sampleStates, viewStates, instanceStates);
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(LocationTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode ReadNextSample(Location data, SampleInfo sampleInfo)
+        {
+            if (data == null || sampleInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+            IntPtr ptr = IntPtr.Zero;
+            SampleInfoWrapper infoWrapper = new SampleInfoWrapper();
+            
+            ret = (ReturnCode)ReadNextSample(_native, ref ptr, ref infoWrapper);
+
+            if (ret == ReturnCode.Ok)
+            {
+                var json_data = MarshalHelper.StringFromNativeUtf8(ptr) ?? string.Empty;
+                
+                if (!string.IsNullOrWhiteSpace(json_data))
+                {
+                    var sample = LocationTypeSupport.DecodeFromString(json_data);
+
+                    data.MemberwiseCopy(sample);
+                }
+
+                MarshalHelper.ReleaseNativeStringPointer(ptr);
+                
+                sampleInfo.FromNative(infoWrapper);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode TakeNextSample(Location data, SampleInfo sampleInfo)
+        {
+            if (data == null || sampleInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+            var ptr = IntPtr.Zero;
+            var infoWrapper = new SampleInfoWrapper();
+            ret = (ReturnCode)TakeNextSample(_native, ref ptr, ref infoWrapper);
+            if (ret == ReturnCode.Ok)
+            {
+                var json_data = MarshalHelper.StringFromNativeUtf8(ptr) ?? string.Empty;
+            
+                if (!string.IsNullOrWhiteSpace(json_data))
+                {
+                    var sample = LocationTypeSupport.DecodeFromString(json_data);
+
+                    data.MemberwiseCopy(sample);
+                }
+                
+                MarshalHelper.ReleaseNativeStringPointer(ptr);
+
+                sampleInfo.FromNative(infoWrapper);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode GetKeyValue(Location data, InstanceHandle handle)
+        {
+            if (data == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (handle == InstanceHandle.HandleNil)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            var str = LocationTypeSupport.EncodeToString(data);
+            var ptr = MarshalHelper.NativeUtf8FromString(str);
+
+            var ret = (ReturnCode)GetKeyValue(_native, ref ptr, handle);            
+
+            if (ret == ReturnCode.Ok)
+            {
+                var json_data = MarshalHelper.StringFromNativeUtf8(ptr) ?? string.Empty;
+                
+                if (!string.IsNullOrWhiteSpace(json_data))
+                {
+                    var sample = LocationTypeSupport.DecodeFromString(json_data);
+
+                    data.MemberwiseCopy(sample);
+                }
+
+                MarshalHelper.ReleaseNativeStringPointer(ptr);
+            }
+
+            return ret;
+        }
+
+        public InstanceHandle LookupInstance(Location instance)
+        {
+            InstanceHandle ret = InstanceHandle.HandleNil;
+
+            var json_data = LocationTypeSupport.EncodeToString(instance);
+
+            ret = LookupInstance(_native, json_data);
+
+            return ret;
+        }
+        #endregion
+
+        #region PInvoke
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_Narrow", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr Narrow(IntPtr dr);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_Read_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int Read(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int maxSamples, uint sampleStates, uint viewStates, uint instanceStates);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_ReadWithCondition_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ReadWithCondition(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int maxSamples, IntPtr condition);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_Take_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int Take(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int maxSamples, uint sampleStates, uint viewStates, uint instanceStates);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_TakeWithCondition_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeWithCondition(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int maxSamples, IntPtr condition);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_ReadInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ReadInstance(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, uint sampleStates, uint viewStates, uint instanceStates);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_ReadInstanceWithCondition_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ReadInstanceWithCondition(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, IntPtr condition);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_TakeInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeInstance(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, uint sampleStates, uint viewStates, uint instanceStates);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_TakeInstanceWithCondition_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeInstanceWithCondition(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, IntPtr condition);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_ReadNextInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ReadNextInstance(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, uint sampleStates, uint viewStates, uint instanceStates);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_ReadNextInstanceWithCondition_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ReadNextInstanceWithCondition(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, IntPtr condition);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_TakeNextInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeNextInstance(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, uint sampleStates, uint viewStates, uint instanceStates);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_TakeNextInstanceWithCondition_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeNextInstanceWithCondition(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, IntPtr condition);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_ReadNextSample_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ReadNextSample(IntPtr dr, [In, Out] ref IntPtr json_data, [In, Out] ref SampleInfoWrapper sampleInfo);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_TakeNextSample_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeNextSample(IntPtr dr, [In, Out] ref IntPtr json_data, [In, Out] ref SampleInfoWrapper sampleInfo);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_LookupInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int LookupInstance(IntPtr dr, [MarshalAs(UnmanagedType.LPStr), In]string jsonData);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(Location.API_DLL, EntryPoint = "MissionModule_LocationDataReader_GetKeyValue_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int GetKeyValue(IntPtr dr, [In, Out] ref IntPtr data, int handle);
+        #endregion
+    }
+    #endregion
+
+    #region FiringCommand Definitions
+    public class FiringCommand
+    {
+        #region Constants
+        internal const string API_DLL = "MissionMessagesWrapper";
+        #endregion
+
+        #region Fields
+        Int32 _Key;
+        Int32 _TargetId;
+        Int32 _WeaponType;
+        #endregion
+
+        #region Properties
+        public Int32 Key
+        {
+            get { return _Key; }
+            set { _Key = value; }
+        }
+
+        public Int32 TargetId
+        {
+            get { return _TargetId; }
+            set { _TargetId = value; }
+        }
+
+        public Int32 WeaponType
+        {
+            get { return _WeaponType; }
+            set { _WeaponType = value; }
+        }
+        #endregion 
+
+        #region Constructors
+        public FiringCommand()
+        {
+            _Key = 0;
+            _TargetId = 0;
+            _WeaponType = 0;
+        }
+        #endregion
+
+        #region Methods
+        internal void MemberwiseCopy(FiringCommand source)
+        {
+            Key = source.Key;
+            TargetId = source.TargetId;
+            WeaponType = source.WeaponType;
+        }
+
+        #endregion
+    }
+
+	public class FiringCommandTypeSupport
+    {
+        #region Field
+        private IntPtr _native;
+        #endregion
+
+        #region Constructors
+        public FiringCommandTypeSupport()
+        {
+            _native = FiringCommandTypeSupportNew();
+        }
+        #endregion
+
+        #region Methods
+        public string GetTypeName()
+        {
+            return Marshal.PtrToStringAnsi(GetTypeName(_native));
+        }
+
+        public ReturnCode RegisterType(DomainParticipant dp, string typeName)
+        {
+            return (ReturnCode)RegisterType(_native, dp.ToNative(), typeName);
+        }
+
+        public ReturnCode UnregisterType(DomainParticipant dp, string typeName)
+        {            
+            return (ReturnCode)UnregisterType(_native, dp.ToNative(), typeName);
+        }
+        
+        public static string EncodeToString(FiringCommand sample)
+        {
+            return JsonSerializer.Serialize(sample, new JsonSerializerOptions
+            {
+                AllowTrailingCommas = false,
+                Converters =
+                {
+                    new JsonStringEnumConverter(),
+                    new OctetArrayConverter(),
+                    new FloatJsonConverter(),
+                    new DoubleJsonConverter(),
+                    new DecimalJsonConverter(),
+                }
+            });
+        }
+        
+        public static FiringCommand DecodeFromString(string str)
+        {
+            return JsonSerializer.Deserialize<FiringCommand>(str, new JsonSerializerOptions
+            {
+                AllowTrailingCommas = true,
+                Converters =
+                {
+                    new JsonStringEnumConverter(),
+                    new OctetArrayConverter(),
+                    new FloatJsonConverter(),
+                    new DoubleJsonConverter(),
+                    new DecimalJsonConverter(),
+                }
+            });
+        }
+        #endregion
+
+        #region PInvoke
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandTypeSupport_new", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr FiringCommandTypeSupportNew();
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandTypeSupport_GetTypeName", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Auto, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        private static extern IntPtr GetTypeName(IntPtr native);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandTypeSupport_RegisterType", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        private static extern int RegisterType(IntPtr native, IntPtr dp, string typeName);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandTypeSupport_UnregisterType", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        private static extern int UnregisterType(IntPtr native, IntPtr dp, string typeName);
+        #endregion
+    }
+
+    public class FiringCommandDataWriter : DataWriter
+    {
+        #region Fields
+        private readonly IntPtr _native;
+        #endregion
+
+        #region Constructors
+        public FiringCommandDataWriter(DataWriter dw) : base(dw.ToNative())
+        {
+			IntPtr ptr = base.ToNative();
+            _native = Narrow(ptr);
+        }
+        #endregion
+
+        #region Methods
+        public InstanceHandle RegisterInstance(FiringCommand instance)
+        {
+            InstanceHandle ret = InstanceHandle.HandleNil;
+
+            var str = FiringCommandTypeSupport.EncodeToString(instance);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = RegisterInstance(_native, json_data);
+
+            return ret;
+        }
+
+        public InstanceHandle RegisterInstance(FiringCommand instance, Timestamp timestamp)
+        {
+            InstanceHandle ret = InstanceHandle.HandleNil;
+
+            var str = FiringCommandTypeSupport.EncodeToString(instance);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = RegisterInstanceTimestamp(_native, json_data, timestamp);
+
+            return ret;
+        }
+
+        public ReturnCode UnregisterInstance(FiringCommand data)
+        {
+            InstanceHandle handle = LookupInstance(data);
+            if (handle == InstanceHandle.HandleNil) 
+            {
+                return ReturnCode.PreconditionNotMet;
+            }
+
+            var str = FiringCommandTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+	        return (ReturnCode)UnregisterInstance(_native, json_data, handle);
+        }
+
+		public ReturnCode UnregisterInstance(FiringCommand data, InstanceHandle handle)
+        {
+            var str = FiringCommandTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            return (ReturnCode)UnregisterInstance(_native, json_data, handle);
+        }
+
+        public ReturnCode UnregisterInstance(FiringCommand data, InstanceHandle handle, Timestamp timestamp)
+        {
+            var str = FiringCommandTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            return (ReturnCode)UnregisterInstanceTimestamp(_native, json_data, handle, timestamp);
+        }
+
+        public ReturnCode Write(FiringCommand data)
+        {
+            return Write(data, InstanceHandle.HandleNil);
+        }
+
+        public ReturnCode Write(FiringCommand data, InstanceHandle handle)
+        {
+            if (data == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+
+            var str = FiringCommandTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = (ReturnCode)Write(_native, json_data, handle);
+
+            return ret;
+        }
+
+        public ReturnCode Write(FiringCommand data, InstanceHandle handle, Timestamp timestamp)
+        {
+            if (data == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+
+            var str = FiringCommandTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = (ReturnCode)WriteWithTimestamp(_native, json_data, handle, timestamp);
+
+            return ret;
+        }
+
+        public ReturnCode Dispose(FiringCommand data)
+        {
+            return Dispose(data, InstanceHandle.HandleNil);
+        }
+
+		public ReturnCode Dispose(FiringCommand data, InstanceHandle handle)
+        {
+            if (data == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+
+            var str = FiringCommandTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = (ReturnCode)Dispose(_native, json_data, handle);
+            
+            return ret;
+        }
+
+        public ReturnCode Dispose(FiringCommand data, InstanceHandle handle, Timestamp timestamp)
+        {
+            if (data == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+
+            var str = FiringCommandTypeSupport.EncodeToString(data);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = (ReturnCode)DisposeTimestamp(_native, json_data, handle, timestamp);
+
+            return ret;
+        }
+
+        public ReturnCode GetKeyValue(FiringCommand data, InstanceHandle handle)
+        {
+            if (data == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (handle == InstanceHandle.HandleNil)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+            
+            var str = FiringCommandTypeSupport.EncodeToString(data);
+            var ptr = MarshalHelper.NativeUtf8FromString(str);
+            ret = (ReturnCode)GetKeyValue(_native, ref ptr, handle);
+
+            if (ret == ReturnCode.Ok)
+            {
+                var json_data = MarshalHelper.StringFromNativeUtf8(ptr) ?? string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(json_data))
+                {
+                    var sample = FiringCommandTypeSupport.DecodeFromString(json_data);
+
+                    data.MemberwiseCopy(sample);
+                }
+
+                MarshalHelper.ReleaseNativeStringPointer(ptr);
+            }
+
+            return ret;
+        }
+
+        public InstanceHandle LookupInstance(FiringCommand instance)
+        {
+            InstanceHandle ret = InstanceHandle.HandleNil;
+                        
+            var str = FiringCommandTypeSupport.EncodeToString(instance);
+            var json_data = MarshalHelper.NativeUtf8FromString(str);
+
+            ret = LookupInstance(_native, json_data);
+
+            return ret;
+        }
+        #endregion
+
+        #region PInvoke
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataWriter_Narrow", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr Narrow(IntPtr dw);
+        
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataWriter_Write_Json", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        private static extern int Write(IntPtr dw, [In] IntPtr jsonData, int handle);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataWriter_WriteWithTimestamp_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int WriteWithTimestamp(IntPtr dw, [In] IntPtr jsonData, int handle, [MarshalAs(UnmanagedType.Struct), In] Timestamp timestamp);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataWriter_RegisterInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int RegisterInstance(IntPtr dw, [In] IntPtr jsonData);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataWriter_RegisterInstanceTimestamp_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int RegisterInstanceTimestamp(IntPtr dw, [In] IntPtr jsonData, [MarshalAs(UnmanagedType.Struct), In] Timestamp timestamp);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataWriter_UnregisterInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int UnregisterInstance(IntPtr dw, [In] IntPtr jsonData, int handle);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataWriter_UnregisterInstanceTimestamp_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int UnregisterInstanceTimestamp(IntPtr dw, [In] IntPtr jsonData, int handle, [MarshalAs(UnmanagedType.Struct), In] Timestamp timestamp);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataWriter_LookupInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int LookupInstance(IntPtr dw, [In] IntPtr jsonData);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataWriter_Dispose_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int Dispose(IntPtr dw, [In] IntPtr jsonData, int handle);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataWriter_DisposeTimestamp_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int DisposeTimestamp(IntPtr dw, [In] IntPtr jsonData, int handle, [MarshalAs(UnmanagedType.Struct), In] Timestamp timestamp);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataWriter_GetKeyValue_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int GetKeyValue(IntPtr dw, [In, Out] ref IntPtr json_data, int handle);
+        #endregion
+    }
+
+    public class FiringCommandDataReader : DataReader
+    {
+        #region Fields
+        private readonly IntPtr _native;
+        #endregion
+
+        #region Constructors
+        public FiringCommandDataReader(DataReader dr) : base(dr.ToNative())
+        {
+			IntPtr ptr = base.ToNative();
+            _native = Narrow(ptr);
+        }
+        #endregion
+
+        #region Methods
+        public ReturnCode Read(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo)
+        {
+            return Read(receivedData, receivedInfo, ResourceLimitsQosPolicy.LengthUnlimited, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+        public ReturnCode Read(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, int maxSamples)
+        {
+            return Read(receivedData, receivedInfo, maxSamples, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+        public ReturnCode Read(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, int maxSamples, ReadCondition condition)
+        {
+            if (condition == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)ReadWithCondition(_native, ref rd, ref ri, maxSamples, condition.ToNative());
+            
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(FiringCommandTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode Read(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, int maxSamples, SampleStateMask sampleStates, ViewStateMask viewStates, InstanceStateMask instanceStates)
+        {
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)Read(_native, ref rd, ref ri, maxSamples, sampleStates, viewStates, instanceStates);            
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(FiringCommandTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode Take(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo)
+        {
+            return Take(receivedData, receivedInfo, ResourceLimitsQosPolicy.LengthUnlimited, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+        public ReturnCode Take(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, int maxSamples)
+        {
+            return Take(receivedData, receivedInfo, maxSamples, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+        public ReturnCode Take(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, int maxSamples, ReadCondition condition)
+        {
+            if (condition == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)TakeWithCondition(_native, ref rd, ref ri, maxSamples, condition.ToNative());            
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(FiringCommandTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode Take(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, int maxSamples, SampleStateMask sampleStates, ViewStateMask viewStates, InstanceStateMask instanceStates)
+        {
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)Take(_native, ref rd, ref ri, maxSamples, sampleStates, viewStates, instanceStates);
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(FiringCommandTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode ReadInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle)
+        {
+            return ReadInstance(receivedData, receivedInfo, handle, ResourceLimitsQosPolicy.LengthUnlimited, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode ReadInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle, int maxSamples)
+        {
+            return ReadInstance(receivedData, receivedInfo, handle, maxSamples, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode ReadInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle, int maxSamples, ReadCondition condition)
+        {
+            if (condition == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)ReadInstanceWithCondition(_native, ref rd, ref ri, (int)handle, maxSamples, condition.ToNative());
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(FiringCommandTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode ReadInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle, int maxSamples, SampleStateMask sampleStates, ViewStateMask viewStates, InstanceStateMask instanceStates)
+        {
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)ReadInstance(_native, ref rd, ref ri, handle, maxSamples, sampleStates, viewStates, instanceStates);
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(FiringCommandTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode TakeInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle)
+        {
+            return TakeInstance(receivedData, receivedInfo, handle, ResourceLimitsQosPolicy.LengthUnlimited, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode TakeInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle, int maxSamples)
+        {
+            return TakeInstance(receivedData, receivedInfo, handle, maxSamples, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode TakeInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle, int maxSamples, ReadCondition condition)
+        {
+            if (condition == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)TakeInstanceWithCondition(_native, ref rd, ref ri, (int)handle, maxSamples, condition.ToNative());
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(FiringCommandTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode TakeInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle handle, int maxSamples, SampleStateMask sampleStates, ViewStateMask viewStates, InstanceStateMask instanceStates)
+        {
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)TakeInstance(_native, ref rd, ref ri, handle, maxSamples, sampleStates, viewStates, instanceStates);
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(FiringCommandTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode ReadNextInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle)
+        {
+            return ReadNextInstance(receivedData, receivedInfo, previousHandle, ResourceLimitsQosPolicy.LengthUnlimited, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode ReadNextInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle, int maxSamples)
+        {
+            return ReadNextInstance(receivedData, receivedInfo, previousHandle, maxSamples, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode ReadNextInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle, int maxSamples, ReadCondition condition)
+        {
+            if (condition == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)ReadNextInstanceWithCondition(_native, ref rd, ref ri, previousHandle, maxSamples, condition.ToNative());
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(FiringCommandTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode ReadNextInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle, int maxSamples, SampleStateMask sampleStates, ViewStateMask viewStates, InstanceStateMask instanceStates)
+        {
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)ReadNextInstance(_native, ref rd, ref ri, previousHandle, maxSamples, sampleStates, viewStates, instanceStates);
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(FiringCommandTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode TakeNextInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle)
+        {
+            return TakeNextInstance(receivedData, receivedInfo, previousHandle, ResourceLimitsQosPolicy.LengthUnlimited, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode TakeNextInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle, int maxSamples)
+        {
+            return TakeNextInstance(receivedData, receivedInfo, previousHandle, maxSamples, SampleStateMask.AnySampleState, ViewStateMask.AnyViewState, InstanceStateMask.AnyInstanceState);
+        }
+
+		public ReturnCode TakeNextInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle, int maxSamples, ReadCondition condition)
+        {
+            if (condition == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)TakeNextInstanceWithCondition(_native, ref rd, ref ri, previousHandle, maxSamples, condition.ToNative());
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(FiringCommandTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode TakeNextInstance(List<FiringCommand> receivedData, List<SampleInfo> receivedInfo, InstanceHandle previousHandle, int maxSamples, SampleStateMask sampleStates, ViewStateMask viewStates, InstanceStateMask instanceStates)
+        {
+            if (receivedData == null || receivedInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            receivedData.Clear();
+            receivedInfo.Clear();
+
+            IntPtr rd = IntPtr.Zero;
+            IntPtr ri = IntPtr.Zero;
+
+            ReturnCode ret = ReturnCode.Error;
+            ret = (ReturnCode)TakeNextInstance(_native, ref rd, ref ri, previousHandle, maxSamples, sampleStates, viewStates, instanceStates);
+
+            if (ret == ReturnCode.Ok && !rd.Equals(IntPtr.Zero) && !ri.Equals(IntPtr.Zero))
+            {
+                IList<string> data = new List<string>();
+                IList<SampleInfoWrapper> info = new List<SampleInfoWrapper>();
+
+                MarshalHelper.PtrToUTF8StringSequence(rd, ref data);
+                MarshalHelper.PtrToSequence(ri, ref info);
+
+                if (data != null)
+                {
+                    foreach (var d in data)
+                    {                      
+                        receivedData.Add(FiringCommandTypeSupport.DecodeFromString(d));
+                    }
+                }
+
+                if (info != null && info.Count > 0)
+                {
+                    foreach (var i in info)
+                    {
+                        SampleInfo aux = new SampleInfo();
+                        aux.FromNative(i);
+                        receivedInfo.Add(aux);
+                    }
+                }
+                
+                MarshalHelper.ReleaseNativeStringSequence(rd);
+                MarshalHelper.ReleaseNativePointer(ri);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode ReadNextSample(FiringCommand data, SampleInfo sampleInfo)
+        {
+            if (data == null || sampleInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+            IntPtr ptr = IntPtr.Zero;
+            SampleInfoWrapper infoWrapper = new SampleInfoWrapper();
+            
+            ret = (ReturnCode)ReadNextSample(_native, ref ptr, ref infoWrapper);
+
+            if (ret == ReturnCode.Ok)
+            {
+                var json_data = MarshalHelper.StringFromNativeUtf8(ptr) ?? string.Empty;
+                
+                if (!string.IsNullOrWhiteSpace(json_data))
+                {
+                    var sample = FiringCommandTypeSupport.DecodeFromString(json_data);
+
+                    data.MemberwiseCopy(sample);
+                }
+
+                MarshalHelper.ReleaseNativeStringPointer(ptr);
+                
+                sampleInfo.FromNative(infoWrapper);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode TakeNextSample(FiringCommand data, SampleInfo sampleInfo)
+        {
+            if (data == null || sampleInfo == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            ReturnCode ret = ReturnCode.Error;
+            var ptr = IntPtr.Zero;
+            var infoWrapper = new SampleInfoWrapper();
+            ret = (ReturnCode)TakeNextSample(_native, ref ptr, ref infoWrapper);
+            if (ret == ReturnCode.Ok)
+            {
+                var json_data = MarshalHelper.StringFromNativeUtf8(ptr) ?? string.Empty;
+            
+                if (!string.IsNullOrWhiteSpace(json_data))
+                {
+                    var sample = FiringCommandTypeSupport.DecodeFromString(json_data);
+
+                    data.MemberwiseCopy(sample);
+                }
+                
+                MarshalHelper.ReleaseNativeStringPointer(ptr);
+
+                sampleInfo.FromNative(infoWrapper);
+            }
+
+            return ret;
+        }
+
+        public ReturnCode GetKeyValue(FiringCommand data, InstanceHandle handle)
+        {
+            if (data == null)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            if (handle == InstanceHandle.HandleNil)
+            {
+                return ReturnCode.BadParameter;
+            }
+
+            var str = FiringCommandTypeSupport.EncodeToString(data);
+            var ptr = MarshalHelper.NativeUtf8FromString(str);
+
+            var ret = (ReturnCode)GetKeyValue(_native, ref ptr, handle);            
+
+            if (ret == ReturnCode.Ok)
+            {
+                var json_data = MarshalHelper.StringFromNativeUtf8(ptr) ?? string.Empty;
+                
+                if (!string.IsNullOrWhiteSpace(json_data))
+                {
+                    var sample = FiringCommandTypeSupport.DecodeFromString(json_data);
+
+                    data.MemberwiseCopy(sample);
+                }
+
+                MarshalHelper.ReleaseNativeStringPointer(ptr);
+            }
+
+            return ret;
+        }
+
+        public InstanceHandle LookupInstance(FiringCommand instance)
+        {
+            InstanceHandle ret = InstanceHandle.HandleNil;
+
+            var json_data = FiringCommandTypeSupport.EncodeToString(instance);
+
+            ret = LookupInstance(_native, json_data);
+
+            return ret;
+        }
+        #endregion
+
+        #region PInvoke
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_Narrow", CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr Narrow(IntPtr dr);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_Read_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int Read(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int maxSamples, uint sampleStates, uint viewStates, uint instanceStates);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_ReadWithCondition_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ReadWithCondition(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int maxSamples, IntPtr condition);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_Take_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int Take(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int maxSamples, uint sampleStates, uint viewStates, uint instanceStates);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_TakeWithCondition_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeWithCondition(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int maxSamples, IntPtr condition);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_ReadInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ReadInstance(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, uint sampleStates, uint viewStates, uint instanceStates);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_ReadInstanceWithCondition_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ReadInstanceWithCondition(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, IntPtr condition);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_TakeInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeInstance(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, uint sampleStates, uint viewStates, uint instanceStates);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_TakeInstanceWithCondition_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeInstanceWithCondition(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, IntPtr condition);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_ReadNextInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ReadNextInstance(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, uint sampleStates, uint viewStates, uint instanceStates);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_ReadNextInstanceWithCondition_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ReadNextInstanceWithCondition(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, IntPtr condition);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_TakeNextInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeNextInstance(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, uint sampleStates, uint viewStates, uint instanceStates);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_TakeNextInstanceWithCondition_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeNextInstanceWithCondition(IntPtr dr, ref IntPtr receivedData, ref IntPtr receivedInfo, int handle, int maxSamples, IntPtr condition);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_ReadNextSample_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ReadNextSample(IntPtr dr, [In, Out] ref IntPtr json_data, [In, Out] ref SampleInfoWrapper sampleInfo);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_TakeNextSample_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int TakeNextSample(IntPtr dr, [In, Out] ref IntPtr json_data, [In, Out] ref SampleInfoWrapper sampleInfo);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_LookupInstance_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int LookupInstance(IntPtr dr, [MarshalAs(UnmanagedType.LPStr), In]string jsonData);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(FiringCommand.API_DLL, EntryPoint = "MissionModule_FiringCommandDataReader_GetKeyValue_Json", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int GetKeyValue(IntPtr dr, [In, Out] ref IntPtr data, int handle);
+        #endregion
+    }
+    #endregion
+
 }
