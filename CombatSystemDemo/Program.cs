@@ -1,30 +1,17 @@
-﻿using OpenDDSharp;
-using OpenDDSharp.DDS;
-using OpenDDSharp.OpenDDS.DCPS;
-using System;
+﻿using System;
+using CombatSystem.Devices;
+using CombatSystemDemo.Devices;
 
-namespace CombatSystemDemo
+namespace CombatSystemDemo;
+
+internal class Program
 {
-    internal class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            Ace.Init();
+      Launcher launcher = new Launcher();
+      launcher.Import();
 
-            DomainParticipantFactory dpf = ParticipantService.Instance.GetDomainParticipantFactory("-DCPSConfigFile", "rtps.ini");
-            DomainParticipant participant = dpf.CreateParticipant(42);
-            if (participant == null)
-            {
-                throw new Exception("Could not create the participant");
-            }
 
-            // Include your program here
-
-            participant.DeleteContainedEntities();
-            dpf.DeleteParticipant(participant);
-            ParticipantService.Instance.Shutdown();
-
-            Ace.Fini();
-        }
+      Console.ReadLine();
     }
 }

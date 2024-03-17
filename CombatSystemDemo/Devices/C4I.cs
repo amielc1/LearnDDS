@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CombatSystem.Models
+namespace CombatSystem.Devices
 {
-    public class FiringStatus
+    public class C4I
     {
-        public int TargetId;
-        public bool Success;
     }
 }
