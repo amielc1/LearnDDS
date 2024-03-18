@@ -13,6 +13,7 @@ namespace CombatSystemDemo.Devices
 {
     public class C4I
     {
+        static int counter = 0;
         private readonly IDataReaderCreator _reader;
         private readonly IDataWriterCreator _writer;
         private readonly IDdsService _ddsService;
@@ -21,7 +22,8 @@ namespace CombatSystemDemo.Devices
         private readonly IPublisher _publisher;
 
 
-        private readonly string MissionTopic = "MissionTopic";
+        private const string MissionTopic = "MissionTopic";
+
         public C4I()
         {
             IGenericDataWriter<Mission> WriterFactory(DataWriter writer) => new MissionDataWriterAdapter(writer);
@@ -48,27 +50,25 @@ namespace CombatSystemDemo.Devices
         }
 
         public async Task ExportMission()
-        {
-            for (int i = 0; i < 10000; i++)
-            {
+        { 
                  var msg = new Mission()
                 {
-                    Key = i,
-                    Name = $"{i} mission",
+                    Key = counter,
+                    Name = $"{counter} mission",
                     Description = "Fire Command mission ",
                     Status = "to fire"
                 };
                 await _publisher.Publish(MissionTopic, msg);
                 await Task.Delay(100);
-                Console.WriteLine($"C4I SEND Mission {msg.Name} to topic {MissionTopic}");
-            }
-               
-        }
+                Console.WriteLine($"C4I SEND Mission {msg.Name} to topic {MissionTopic}");     }
 
         private async void OnMessageArrived(object sender, object e)
         {
             Console.WriteLine($"{DateTime.Now.ToLongTimeString()} C4I RCV Location {((Location)e).Key}");
-            //await ExportMission();
+            if ((counter++ % 10) == 0 )
+            {
+                await ExportMission(); 
+            }
         }
     }
 }

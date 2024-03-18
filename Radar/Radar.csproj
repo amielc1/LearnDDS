@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenDDSharp" Version="3.250.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DDSService.Imp\DDSService.Imp.csproj" />
     <ProjectReference Include="..\DDSService\DDSService.csproj" />
   </ItemGroup>

@@ -10,23 +10,21 @@ namespace CombatSystemDemo.Devices;
 
 public class Launcher
 {
-    private readonly IDataReaderCreator _reader;
-    private readonly IDdsService _ddsService;
     private readonly DdsConfiguration _config;
     private readonly ISubscriber _subscriber;
      
     public Launcher()
     {
         IGenericDataReader<Mission> ReaderFactory(DataReader reader) => new MissionDataReaderAdapter(reader);
-        _reader = new GenericReaderCreator<MissionTypeSupportAdapter, Mission>(ReaderFactory);
+        IDataReaderCreator reader1 = new GenericReaderCreator<MissionTypeSupportAdapter, Mission>(ReaderFactory);
          
         _config = new DdsConfiguration
         {
             Topic = "MissionTopic"
         };
       
-        _ddsService = new OpenDdsService(_config);
-        _subscriber = new DdsSubscriber(_ddsService, _reader);
+        IDdsService ddsService = new OpenDdsService(_config);
+        _subscriber = new DdsSubscriber(ddsService, reader1);
     }
 
     public async Task Import()
