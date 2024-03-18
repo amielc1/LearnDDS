@@ -1,11 +1,8 @@
 ﻿using OpenDDSharp.DDS;
-using System.Xml.Linq;
 
-namespace DDSService.Interface
+namespace DDSService.Interface;
+
+public interface IGenericDataReader<T>
 {
-    public interface IGenericDataReader<T>
-    {
-
-        ReturnCode Take(List<T> dataValues, List<SampleInfo> sampleInfos,EventHandler<T> DataReceived);
-    }
+    ReturnCode Take(List<T> dataValues, List<SampleInfo> sampleInfos,EventHandler<T> dataReceived);
 }

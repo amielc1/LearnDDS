@@ -10,8 +10,8 @@ namespace DDSService
         public event EventHandler<object> DataReceived;
         private Subscriber _subscriber;
         private DomainParticipant _participant;
-        private CancellationTokenSource _cancellationTokenSource = new();
-        private GenericListener<TData> _listener;
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
+        private readonly GenericListener<TData> _listener;
 
         public GenericReaderCreator(DataReaderFactory<TData> factory)
         {

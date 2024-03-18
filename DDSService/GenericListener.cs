@@ -3,8 +3,7 @@ using OpenDDSharp.DDS;
 
 namespace DDSService
 {
-    public delegate IGenericDataReader<TData> DataReaderFactory<TData>(DataReader reader); 
-
+     
     public class GenericListener<TData> : DataReaderListener
         where TData : class
     {

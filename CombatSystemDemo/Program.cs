@@ -1,17 +1,19 @@
 ﻿using System;
-using CombatSystem.Devices;
+using System.Threading.Tasks;
 using CombatSystemDemo.Devices;
 
 namespace CombatSystemDemo;
 
 internal class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
-      Launcher launcher = new Launcher();
-      launcher.Import();
+        var radar = new Radar();
+        var launcher = new Launcher();
 
+        await launcher.Import(); 
+        await radar.Export();  
 
-      Console.ReadLine();
+        Console.ReadLine();
     }
 }
