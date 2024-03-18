@@ -2,7 +2,7 @@
 using OpenDDSharp.DDS;
 using DDSService.Interface;
 
-namespace DDSService.Adapters
+namespace DDSService.Imp.Adapters
 {
     public class MissionTypeSupportAdapter : ITypeSupport
     {

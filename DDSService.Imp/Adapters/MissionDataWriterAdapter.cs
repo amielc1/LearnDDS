@@ -2,7 +2,7 @@
 using MissionModule;
 using OpenDDSharp.DDS;
 
-namespace DDSService.Adapters;
+namespace DDSService.Imp.Adapters;
 
 public class MissionDataWriterAdapter : IGenericDataWriter<Mission>
 {

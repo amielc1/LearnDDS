@@ -2,8 +2,8 @@
 using MissionModule;
 using OpenDDSharp.DDS;
 
-namespace DDSService.Adapters;
-
+namespace DDSService.Imp.Adapters;
+ 
 public class MissionDataReaderAdapter : IGenericDataReader<Mission>
 {
     private readonly MissionDataReader _missionDataReader;

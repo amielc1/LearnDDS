@@ -1,7 +1,7 @@
 ﻿using System;
 using DDSService;
-using DDSService.Adapters;
 using DDSService.Configuration;
+using DDSService.Imp.Adapters;
 using DDSService.Interface;
 using DDSService.MessageBroker.DDS;
 using MessageBroker.Core.Interfaces;
