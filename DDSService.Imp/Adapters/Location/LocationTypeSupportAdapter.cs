@@ -6,10 +6,10 @@ namespace DDSService.Imp.Adapters;
 
 public class LocationTypeSupportAdapter : ITypeSupport
 {
-    private LocationTypeSupport _locationTypeSupport = new LocationTypeSupport();
+    private readonly LocationTypeSupport _typeSupport = new();
 
-    public string GetTypeName() => _locationTypeSupport.GetTypeName();
+    public string GetTypeName() => _typeSupport.GetTypeName();
 
     public ReturnCode RegisterType(DomainParticipant participant, string typeName) =>
-        _locationTypeSupport.RegisterType(participant, typeName);
+        _typeSupport.RegisterType(participant, typeName);
 }

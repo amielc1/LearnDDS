@@ -12,19 +12,19 @@ using System.Threading.Tasks;
 namespace CombatSystemDemo.Devices;
 
 public class Launcher
-{ 
+{
     private readonly IDataReaderCreator _creator;
     private readonly IDdsService _ddsService;
     private readonly DdsConfiguration _config;
     private readonly ISubscriber _subscriber;
 
- 
+
     public Launcher()
     {
 
         IGenericDataReader<Mission> Factory(DataReader reader) => new MissionDataReaderAdapter(reader);
         var readerCreator = new GenericReaderCreator<MissionTypeSupportAdapter, Mission>(Factory);
-             
+
         _creator = readerCreator;
         _config = new DdsConfiguration
         {
@@ -35,12 +35,13 @@ public class Launcher
     }
 
     public async Task Import()
-    {
-         await _subscriber.Subscribe(_config.Topic, OnMessageArrived);
+    { 
+        await _subscriber.Subscribe(_config.Topic, OnMessageArrived);
+        Console.WriteLine($"Launcher Subscribe {_config.Topic}");
     }
 
     public void OnMessageArrived(object sender, object e)
     {
-        Console.WriteLine($"Launcher RCV {DateTime.Now.ToLongTimeString()}  {((Mission)e).Name}");
+        Console.WriteLine($"{DateTime.Now.ToLongTimeString()} Launcher RCV Mission  {((Mission)e).Name}");
     }
 }

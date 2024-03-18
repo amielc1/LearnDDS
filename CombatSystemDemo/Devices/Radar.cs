@@ -11,8 +11,7 @@ using MissionModule;
 namespace CombatSystemDemo.Devices
 {
     public class Radar
-    {
-        private static int counter = 0;
+    { 
         private readonly IDdsService _ddsService;
         private readonly DdsConfiguration _config;
         private readonly IPublisher _publisher;
@@ -20,12 +19,12 @@ namespace CombatSystemDemo.Devices
         public Radar()
         {
 
-            DataWriterFactory.Register(writer => new MissionDataWriterAdapter(writer));
-            IDataWriterCreator creator = new GenericWriterCreator<MissionTypeSupportAdapter, Mission>();
+            DataWriterFactory.Register(writer => new LocationDataWriterAdapter(writer));
+            IDataWriterCreator creator = new GenericWriterCreator<LocationTypeSupportAdapter, Location>();
 
             _config = new DdsConfiguration
             {
-                Topic = "MissionTopic"
+                Topic = "LocationTopic"
             };
 
             _ddsService = new OpenDdsService(_config);
@@ -36,13 +35,15 @@ namespace CombatSystemDemo.Devices
         {
             for (int i = 0; i < 100; i++)
             {
-                var msg = new Mission()
+                var msg = new Location()
                 {
-                    Key = counter++, Name = $"{counter} mission", Description = "Fire Command mission ",
-                    Status = "to fire"
+                     Key = i,
+                     Latitude = i,
+                     Longtitude = i,
+                     Altitude = i,
                 };
                 await _publisher.Publish(_config.Topic, msg);
-                Console.WriteLine($"Radar SEND {msg.Name}");
+                Console.WriteLine($"Radar SEND Location {msg.Key}");
                 await Task.Delay(100);
             }
         }   

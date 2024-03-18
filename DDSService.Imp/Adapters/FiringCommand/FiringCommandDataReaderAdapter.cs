@@ -4,20 +4,20 @@ using OpenDDSharp.DDS;
 
 namespace DDSService.Imp.Adapters;
 
-public class LocationDataReaderAdapter : IGenericDataReader<Location>
+public class FiringCommandDataReaderAdapter : IGenericDataReader<FiringCommand>
 {
-    private LocationDataReader _locationDataReader;
+    private readonly FiringCommandDataReader _reader;
 
-    public LocationDataReaderAdapter(DataReader reader)
+    public FiringCommandDataReaderAdapter(DataReader reader)
     {
-        _locationDataReader = (LocationDataReader)reader; // Assume safe casting based on your system's design
+        _reader = (FiringCommandDataReader)reader; // Assume safe casting based on your system's design
     }
 
-    public ReturnCode Take(List<Location> dataValues, List<SampleInfo> sampleInfos, EventHandler<Location> DataReceived)
+    public ReturnCode Take(List<FiringCommand> dataValues, List<SampleInfo> sampleInfos, EventHandler<FiringCommand> DataReceived)
     {
-        var receivedData = new List<Location>();
+        var receivedData = new List<FiringCommand>();
         var receivedInfo = new List<SampleInfo>();
-        var result = _locationDataReader.Take(receivedData, receivedInfo);
+        var result = _reader.Take(receivedData, receivedInfo);
 
         if (result == ReturnCode.Ok)
         {
@@ -34,5 +34,5 @@ public class LocationDataReaderAdapter : IGenericDataReader<Location>
             Console.WriteLine($"No data available or error in reading data: {result}");
         }
         return ReturnCode.Ok;
-    } 
+    }
 }

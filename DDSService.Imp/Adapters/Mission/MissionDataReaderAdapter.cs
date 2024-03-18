@@ -6,18 +6,18 @@ namespace DDSService.Imp.Adapters;
  
 public class MissionDataReaderAdapter : IGenericDataReader<Mission>
 {
-    private readonly MissionDataReader _missionDataReader;
+    private readonly MissionDataReader _reader;
 
     public MissionDataReaderAdapter(DataReader reader)
     {
-        _missionDataReader = new MissionDataReader(reader); 
+        _reader = new MissionDataReader(reader); 
     }
 
     public ReturnCode Take(List<Mission> dataValues, List<SampleInfo> sampleInfos, EventHandler<Mission> DataReceived)
     {
         var receivedData = new List<Mission>();
         var receivedInfo = new List<SampleInfo>();
-        var result = _missionDataReader.Take(receivedData, receivedInfo);
+        var result = _reader.Take(receivedData, receivedInfo);
 
         if (result == ReturnCode.Ok)
         {

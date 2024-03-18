@@ -6,7 +6,7 @@ namespace DDSService.Imp.Adapters;
 
 public class MissionDataWriterAdapter : IGenericDataWriter<Mission>
 {
-    private MissionDataWriter _writer;
+    private readonly MissionDataWriter _writer;
 
     public MissionDataWriterAdapter(DataWriter writer)
     {

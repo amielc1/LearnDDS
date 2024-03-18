@@ -10,9 +10,13 @@ internal class Program
     {
         var radar = new Radar();
         var launcher = new Launcher();
+        var c4I = new C4I(); 
+        Task.Run(async () => { await radar.Export(); });
 
-        await launcher.Import(); 
-        await radar.Export();  
+        await c4I.Import();
+        await launcher.Import();
+    
+       
 
         Console.ReadLine();
     }

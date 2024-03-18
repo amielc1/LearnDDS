@@ -6,11 +6,11 @@ namespace DDSService.Imp.Adapters
 {
     public class MissionTypeSupportAdapter : ITypeSupport
     {
-        private readonly MissionTypeSupport _missionTypeSupport = new MissionTypeSupport();
+        private readonly MissionTypeSupport _typeSupport = new();
 
-        public string GetTypeName() => _missionTypeSupport.GetTypeName();
+        public string GetTypeName() => _typeSupport.GetTypeName();
 
         public ReturnCode RegisterType(DomainParticipant participant, string typeName) =>
-            _missionTypeSupport.RegisterType(participant, typeName);
+            _typeSupport.RegisterType(participant, typeName);
     }
 }
