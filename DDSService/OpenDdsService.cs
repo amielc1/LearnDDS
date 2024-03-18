@@ -2,12 +2,13 @@
 using DDSService.Interface;
 using OpenDDSharp;
 using OpenDDSharp.DDS;
-using OpenDDSharp.OpenDDS.DCPS;
+using OpenDDSharp.OpenDDS.DCPS; 
 
 namespace DDSService;
 
 public delegate IGenericDataReader<TData> DataReaderFactory<TData>(DataReader reader);
-public delegate IGenericDataWriter<T> DataWriterCreator<T>(DataWriter writer) where T : class;
+
+public delegate IGenericDataWriter<TData> DataWriterFactory<TData>(DataWriter writer);
 
 public class OpenDdsService : IDdsService
 {

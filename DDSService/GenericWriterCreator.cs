@@ -1,29 +1,8 @@
-﻿using System.Collections.Concurrent;
-using DDSService.Interface;
+﻿using DDSService.Interface;
 using OpenDDSharp.DDS;
 
 namespace DDSService;
-
-
-public static class DataWriterFactory
-{
-    private static readonly ConcurrentDictionary<Type, Func<DataWriter, object>> _creators = new();
-
-    public static void Register<TData>(Func<DataWriter, IGenericDataWriter<TData>> creator) where TData : class
-    {
-        _creators[typeof(TData)] = writer => creator(writer);
-    }
-
-    public static IGenericDataWriter<TData> Create<TData>(DataWriter writer) where TData : class
-    {
-        if (_creators.TryGetValue(typeof(TData), out var creator))
-        {
-            return (IGenericDataWriter<TData>)creator(writer);
-        }
-        throw new InvalidOperationException($"No creator registered for type {typeof(TData).FullName}");
-    }
-}
-
+ 
 public class GenericWriterCreator<TTypeSupport, TData> : IDataWriterCreator
     where TTypeSupport : ITypeSupport, new()
     where TData : class
@@ -32,8 +11,14 @@ public class GenericWriterCreator<TTypeSupport, TData> : IDataWriterCreator
     private Publisher? _publisher;
     private Topic _topicInstance;
     private IGenericDataWriter<TData> _dataWriter;
+    private readonly DataWriterFactory<TData> _factory;
 
-    public DataWriter CreateWriter(DomainParticipant participant, string topic)
+    public GenericWriterCreator(DataWriterFactory<TData> factory)
+    {
+        _factory = factory;
+    }
+
+    public DataWriter? CreateWriter(DomainParticipant participant, string topic)
     {
         if (_dataWriter != null)
             return _dataWriter as DataWriter;
@@ -48,15 +33,13 @@ public class GenericWriterCreator<TTypeSupport, TData> : IDataWriterCreator
     private IGenericDataWriter<TData> CreateAndWrapDataWriter(string topic)
     {
         Console.WriteLine($"Create DataWriter for topic: {topic}");
-        var writer = _publisher?.CreateDataWriter(_topicInstance) as DataWriter;
+        var writer = _publisher?.CreateDataWriter(_topicInstance);
         if (writer == null)
         {
             throw new Exception("Could not create the data writer");
         }
 
-        // Assume there's a factory or method to wrap or create a IGenericDataWriter<TData> instance
-        var messageWriter = DataWriterFactory.Create<TData>(writer);
-        return messageWriter;
+        return _factory(writer); 
     }
 
     private static Publisher CreatePublisher(DomainParticipant participant)

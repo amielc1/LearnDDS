@@ -18,6 +18,11 @@ namespace DDSService
 
         protected override void OnDataAvailable(DataReader reader)
         {
+            //if (_genericDataReader.GetType().Name == "MissionDataReaderAdapter")
+            //{
+            //    int t = 0; 
+            //} 
+           
             if (_genericDataReader == null) throw new InvalidOperationException("Invalid DataReader type.");
 
             var receivedData = new List<TData>();
@@ -49,7 +54,6 @@ namespace DDSService
         {
             Console.WriteLine($"OnSubscriptionMatched {status}");
             _genericDataReader = _factory(reader);
-
         }
 
         protected override void OnSampleLost(DataReader reader, SampleLostStatus status)

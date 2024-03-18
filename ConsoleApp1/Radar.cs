@@ -1,14 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
-using DDSService;
+﻿using DDSService;
 using DDSService.Configuration;
 using DDSService.Imp.Adapters;
 using DDSService.Interface;
 using DDSService.MessageBroker.DDS;
 using MessageBroker.Core.Interfaces;
 using MissionModule;
+using OpenDDSharp.DDS;
 
-namespace CombatSystemDemo.Devices
+namespace console1.Devices
 {
     public class Radar
     { 
@@ -19,8 +18,8 @@ namespace CombatSystemDemo.Devices
         public Radar()
         {
 
-            DataWriterFactory.Register(writer => new LocationDataWriterAdapter(writer));
-            IDataWriterCreator creator = new GenericWriterCreator<LocationTypeSupportAdapter, Location>();
+            IGenericDataWriter<Location> WriterFactory(DataWriter writer) => new LocationDataWriterAdapter(writer); 
+            IDataWriterCreator creator = new GenericWriterCreator<LocationTypeSupportAdapter, Location>(WriterFactory);
 
             _config = new DdsConfiguration
             {
@@ -33,7 +32,7 @@ namespace CombatSystemDemo.Devices
 
         public async Task Export()
         {
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 100000; i++)
             {
                 var msg = new Location()
                 {
@@ -43,7 +42,7 @@ namespace CombatSystemDemo.Devices
                      Altitude = i,
                 };
                 await _publisher.Publish(_config.Topic, msg);
-                Console.WriteLine($"Radar SEND Location {msg.Key}");
+                Console.WriteLine($"Radar SEND Location {msg.Key} to topic {_config.Topic}");
                 await Task.Delay(100);
             }
         }   

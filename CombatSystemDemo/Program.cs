@@ -8,16 +8,10 @@ internal class Program
 {
     static async Task Main(string[] args)
     {
-        var radar = new Radar();
-        var launcher = new Launcher();
-        var c4I = new C4I(); 
-        Task.Run(async () => { await radar.Export(); });
-
-        await c4I.Import();
-        await launcher.Import();
-    
-       
-
+        var c4I = new C4I();
+        //await c4I.Import();
+        await c4I.ExportMission();
         Console.ReadLine();
+
     }
 }
