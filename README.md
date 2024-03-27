@@ -1,5 +1,9 @@
 [![Build Status](https://github.com/amielc1/LearnDDS/actions/workflows/main.yml/badge.svg)](https://github.com/amielc1/LearnDDS/actions/workflows/main.yml)
 
+1. [DDS Intro](https://youtu.be/ybfSHEArDxY?si=m-Fl0el_xE-R7Ljn)
+2. [DDS IDL](https://youtu.be/eZ-5had7gH8?si=hHS23R7JOBZlHV5Z)
+3. [DDS Simple Example](https://youtu.be/tXH_zsNU704?si=kDCcvT6DNRIUuFWD)
+  
 #  **Getting Started**
 
 ##
