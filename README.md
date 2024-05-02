@@ -1,5 +1,9 @@
 [![Build Status](https://github.com/amielc1/LearnDDS/actions/workflows/main.yml/badge.svg)](https://github.com/amielc1/LearnDDS/actions/workflows/main.yml)
 
+1. [DDS Intro](https://youtu.be/ybfSHEArDxY?si=m-Fl0el_xE-R7Ljn)
+2. [DDS IDL](https://youtu.be/eZ-5had7gH8?si=hHS23R7JOBZlHV5Z)
+3. [DDS Simple Example](https://youtu.be/tXH_zsNU704?si=kDCcvT6DNRIUuFWD)
+  
 #  **Getting Started**
 
 ##
@@ -13,3 +17,6 @@ I had to install “Desktop Development with C++” via VS installer
 ![Snag_fbea0a3](https://github.com/amielc1/LearnDDS/assets/2409265/548cdf3d-454d-4529-8b30-37a5f1960350)
 
 ![Snag_1278d6b3](https://github.com/amielc1/LearnDDS/assets/2409265/3a7cca57-8243-439c-ab23-432e10c44524)
+![Snag_18d855aa](https://github.com/amielc1/LearnDDS/assets/2409265/6d61359c-328c-43e5-aa0c-5423582dd901)
+ 
+<img width="562" alt="Snag_280b29ca" src="https://github.com/amielc1/LearnDDS/assets/2409265/7cf7576d-5aee-457c-8920-3d08eef1bf77">
