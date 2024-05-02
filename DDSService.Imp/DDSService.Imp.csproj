@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DDSService\DDSService.csproj" />
+    <ProjectReference Include="..\MissionMessages\MissionMessages.csproj" />
   </ItemGroup>
 
 </Project>

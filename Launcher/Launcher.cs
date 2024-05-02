@@ -5,7 +5,6 @@ using DDSService.Interface;
 using DDSService.MessageBroker.DDS;
 using MessageBroker.Core.Interfaces;
 using MissionModule;
-using OpenDDSharp.DDS;
 namespace CombatSystemDemo.Devices;
 
 public class Launcher
@@ -14,10 +13,10 @@ public class Launcher
     private readonly ISubscriber _subscriber;
      
     public Launcher()
-    {
-        IGenericDataReader<Mission> ReaderFactory(DataReader reader) => new MissionDataReaderAdapter(reader);
-        IDataReaderCreator reader1 = new GenericReaderCreator<MissionTypeSupportAdapter, Mission>(ReaderFactory);
-         
+    {  
+        IDataReaderCreator reader1 = new GenericReaderCreator<MissionTypeSupportAdapter, Mission>(
+            reader => new MissionDataReaderAdapter(reader));
+
         _config = new DdsConfiguration
         {
             Topic = "MissionTopic"
