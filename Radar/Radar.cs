@@ -26,8 +26,8 @@ namespace console1.Devices
                 Topic = "LocationTopic"
             };
 
-            _ddsService = new OpenDdsService(_config);
-            _publisher = new DdsPublisher(_ddsService, creator);
+            _ddsService = DdsService.GetInstance(_config);
+            _publisher = new DdsPublisher(_ddsService.CreateParticipant(), creator);
         }
 
         public async Task Export()

@@ -14,15 +14,15 @@ public class Launcher
 
     public Launcher()
     {
-        IDataReaderCreator reader1 = new GenericReaderCreator<MissionTypeSupportAdapter>(reader => new MissionDataReaderAdapter(reader));
+        IDataReaderCreator missionReader = new GenericReaderCreator<MissionTypeSupportAdapter>(reader => new MissionDataReaderAdapter(reader));
 
         _config = new DdsConfiguration
         {
             Topic = "MissionTopic"
         };
 
-        IDdsService ddsService = new OpenDdsService(_config);
-        _subscriber = new DdsSubscriber(ddsService, reader1);
+        IDdsService ddsService = DdsService.GetInstance(_config);
+        _subscriber = new DdsSubscriber(ddsService.CreateParticipant(), missionReader);
     }
 
     public async Task Import()

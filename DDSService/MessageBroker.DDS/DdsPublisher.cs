@@ -5,17 +5,14 @@ using OpenDDSharp.DDS;
 namespace DDSService.MessageBroker.DDS;
 
 public class DdsPublisher : IPublisher
-{
-    private readonly IDdsService _ddsService;
+{ 
     private readonly DomainParticipant _participant;
-    private readonly IDataWriterCreator _dataWriterCreator;
+    private readonly IDataWriterCreator _dataWriterCreator; 
 
-
-    public DdsPublisher(IDdsService ddsService, IDataWriterCreator dataWriterCreator)
-    {
-        _ddsService = ddsService;
+    public DdsPublisher(DomainParticipant participant, IDataWriterCreator dataWriterCreator)
+    { 
         _dataWriterCreator = dataWriterCreator;
-        _participant = _ddsService.CreateParticipant();
+        _participant = participant;
 
     }
     public Task Publish(string topic, object data)

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using DDSService;
+﻿using DDSService;
 using DDSService.Configuration;
 using DDSService.Imp.Adapters;
 using DDSService.Interface;
 using DDSService.MessageBroker.DDS;
 using MessageBroker.Core.Interfaces;
 using OpenDDSharp.DDS;
+using System;
+using System.Threading.Tasks;
 
 namespace CombatSystemDemo.Devices
 {
@@ -17,8 +17,6 @@ namespace CombatSystemDemo.Devices
         private readonly IDdsService _ddsService;
         private readonly DdsConfiguration _config;
         private readonly IPublisher _publisher;
-
-
         private const string MissionTopic = "MissionTopic";
 
         public C4I()
@@ -32,8 +30,8 @@ namespace CombatSystemDemo.Devices
             {
                 Topic = "LocationTopic"
             };
-            _ddsService = new OpenDdsService(_config);
-            _publisher = new DdsPublisher(_ddsService, _writer);
+            _ddsService =  DdsService.GetInstance(_config);
+            _publisher = new DdsPublisher(_ddsService.CreateParticipant(), _writer);
         }
 
         public async Task Import()
@@ -52,8 +50,6 @@ namespace CombatSystemDemo.Devices
                 };
                 await _publisher.Publish(MissionTopic, msg);
                 await Task.Delay(100);
-                Console.WriteLine($"C4I SEND Mission {msg.Name} to topic {MissionTopic}");     }
-
-       
+                Console.WriteLine($"C4I SEND Mission {msg.Name} to topic {MissionTopic}");  }
     }
 }

@@ -7,14 +7,12 @@ namespace DDSService.MessageBroker.DDS;
 
 public class DdsSubscriber : ISubscriber
 {
-    private readonly IDdsService _ddsService;
     private readonly IDataReaderCreator _dataReaderCreator;
-    private DomainParticipant _participant;
-    public DdsSubscriber(IDdsService ddsService, IDataReaderCreator dataReaderCreator)
+    private readonly DomainParticipant _participant;
+    public DdsSubscriber(DomainParticipant participant, IDataReaderCreator dataReaderCreator)
     {
-        _ddsService = ddsService;
         _dataReaderCreator = dataReaderCreator;
-        _participant = _ddsService.CreateParticipant();
+        _participant = participant;
     }
 
     public Task Subscribe(string topic, EventHandler<object> onMessageArrived)

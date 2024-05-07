@@ -2,7 +2,7 @@
 using DDSService.Interface;
 using OpenDDSharp;
 using OpenDDSharp.DDS;
-using OpenDDSharp.OpenDDS.DCPS; 
+using OpenDDSharp.OpenDDS.DCPS;
 
 namespace DDSService;
 
@@ -10,23 +10,40 @@ public delegate IGenericDataReader DataReaderFactory(DataReader reader);
 
 public delegate IGenericDataWriter DataWriterFactory(DataWriter writer);
 
-public class OpenDdsService : IDdsService
+public class DdsService : IDdsService
 {
     private readonly DdsConfiguration _ddsConfiguration;
     private DomainParticipant _participant;
-    private DomainParticipantFactory _dpf;
+    private readonly DomainParticipantFactory _dpf;
+    private static DdsService instance = null;
+    private static readonly object padlock = new object();
 
-    public OpenDdsService(DdsConfiguration ddsConfiguration)
+    private DdsService(DdsConfiguration ddsConfiguration)
     {
         _ddsConfiguration = ddsConfiguration;
         Ace.Init();
+        _dpf = ParticipantService.Instance.GetDomainParticipantFactory(_ddsConfiguration.DCPSConfigFile, _ddsConfiguration.rtps);
+    }
+
+    public static DdsService GetInstance(DdsConfiguration config)
+    {
+        if (instance == null)
+        {
+            lock (padlock)
+            {
+                if (instance == null && config != null) // Ensure config is not null
+                {
+                    instance = new DdsService(config);
+                }
+            }
+        }
+        return instance;
     }
 
     public DomainParticipant CreateParticipant()
     {
         try
         {
-            _dpf = ParticipantService.Instance.GetDomainParticipantFactory(_ddsConfiguration.DCPSConfigFile, _ddsConfiguration.rtps);
             Console.WriteLine($"Create DomainParticipant {_ddsConfiguration.DomainId}");
             _participant = _dpf.CreateParticipant(_ddsConfiguration.DomainId);
             if (_participant == null)
