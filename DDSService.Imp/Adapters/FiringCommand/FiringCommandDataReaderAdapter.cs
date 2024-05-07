@@ -10,7 +10,7 @@ public class FiringCommandDataReaderAdapter : IGenericDataReader
 
     public FiringCommandDataReaderAdapter(DataReader reader)
     {
-        _reader = (FiringCommandDataReader)reader; // Assume safe casting based on your system's design
+        _reader = new FiringCommandDataReader(reader);
     }
 
     public ReturnCode Take(EventHandler<object> DataReceived)

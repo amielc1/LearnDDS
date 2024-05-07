@@ -13,6 +13,7 @@ internal class Program
         for (int i = 0; i < 1000; i++)
         { 
             await c4I.ExportMission();
+            await c4I.ExportLocation();
             await Task.Delay(100);
         }
         Console.ReadLine();
