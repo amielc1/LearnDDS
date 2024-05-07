@@ -2,18 +2,17 @@
 using OpenDDSharp.DDS;
 
 namespace DDSService;
- 
-public class GenericWriterCreator<TTypeSupport, TData> : IDataWriterCreator
+
+public class GenericWriterCreator<TTypeSupport> : IDataWriterCreator
     where TTypeSupport : ITypeSupport, new()
-    where TData : class
 {
     private DomainParticipant _participant;
     private Publisher? _publisher;
     private Topic _topicInstance;
-    private IGenericDataWriter<TData> _dataWriter;
-    private readonly DataWriterFactory<TData> _factory;
+    private IGenericDataWriter _dataWriter;
+    private readonly DataWriterFactory _factory;
 
-    public GenericWriterCreator(DataWriterFactory<TData> factory)
+    public GenericWriterCreator(DataWriterFactory factory)
     {
         _factory = factory;
     }
@@ -30,7 +29,7 @@ public class GenericWriterCreator<TTypeSupport, TData> : IDataWriterCreator
         return _dataWriter as DataWriter;
     }
 
-    private IGenericDataWriter<TData> CreateAndWrapDataWriter(string topic)
+    private IGenericDataWriter CreateAndWrapDataWriter(string topic)
     {
         Console.WriteLine($"Create DataWriter for topic: {topic}");
         var writer = _publisher?.CreateDataWriter(_topicInstance);
@@ -39,7 +38,7 @@ public class GenericWriterCreator<TTypeSupport, TData> : IDataWriterCreator
             throw new Exception("Could not create the data writer");
         }
 
-        return _factory(writer); 
+        return _factory(writer);
     }
 
     private static Publisher CreatePublisher(DomainParticipant participant)
@@ -70,7 +69,7 @@ public class GenericWriterCreator<TTypeSupport, TData> : IDataWriterCreator
     {
         try
         {
-            var result = _dataWriter.Write((TData)data);
+            var result = _dataWriter.Write(data);
             if (result != ReturnCode.Ok)
             {
                 throw new Exception("Failed to write data");
@@ -92,6 +91,6 @@ public class GenericWriterCreator<TTypeSupport, TData> : IDataWriterCreator
     private void LogError(string message)
     {
         Console.Error.WriteLine(message);
-    } 
-   
+    }
+
 }

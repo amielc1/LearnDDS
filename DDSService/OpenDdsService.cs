@@ -8,7 +8,7 @@ namespace DDSService;
 
 public delegate IGenericDataReader DataReaderFactory(DataReader reader);
 
-public delegate IGenericDataWriter<TData> DataWriterFactory<TData>(DataWriter writer);
+public delegate IGenericDataWriter DataWriterFactory(DataWriter writer);
 
 public class OpenDdsService : IDdsService
 {

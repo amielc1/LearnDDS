@@ -4,7 +4,7 @@ using OpenDDSharp.DDS;
 
 namespace DDSService.Imp.Adapters;
 
-public class FiringCommandDataWriterAdapter : IGenericDataWriter<FiringCommand>
+public class FiringCommandDataWriterAdapter : IGenericDataWriter
 {
     private readonly FiringCommandDataWriter _writer;
 
@@ -13,9 +13,9 @@ public class FiringCommandDataWriterAdapter : IGenericDataWriter<FiringCommand>
         _writer = new FiringCommandDataWriter(writer);
     }
 
-    public ReturnCode Write(FiringCommand data)
+    public ReturnCode Write(object data)
     {
-        _writer.Write(data);
+        _writer.Write((FiringCommand)data);
         return ReturnCode.Ok;
     }
 }

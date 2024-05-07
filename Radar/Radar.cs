@@ -18,8 +18,8 @@ namespace console1.Devices
         public Radar()
         {
 
-            IGenericDataWriter<Location> WriterFactory(DataWriter writer) => new LocationDataWriterAdapter(writer); 
-            IDataWriterCreator creator = new GenericWriterCreator<LocationTypeSupportAdapter, Location>(WriterFactory);
+            IGenericDataWriter WriterFactory(DataWriter writer) => new LocationDataWriterAdapter(writer); 
+            IDataWriterCreator creator = new GenericWriterCreator<LocationTypeSupportAdapter>(WriterFactory);
 
             _config = new DdsConfiguration
             {

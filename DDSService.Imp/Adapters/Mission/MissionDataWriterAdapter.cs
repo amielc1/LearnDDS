@@ -4,7 +4,7 @@ using OpenDDSharp.DDS;
 
 namespace DDSService.Imp.Adapters;
 
-public class MissionDataWriterAdapter : IGenericDataWriter<Mission>
+public class MissionDataWriterAdapter : IGenericDataWriter
 {
     private readonly MissionDataWriter _writer;
 
@@ -13,9 +13,9 @@ public class MissionDataWriterAdapter : IGenericDataWriter<Mission>
         _writer = new MissionDataWriter(writer);
     }
 
-    public ReturnCode Write(Mission data)
+    public ReturnCode Write(object data)
     {
-        _writer.Write(data);
+        _writer.Write((Mission)data);
         return ReturnCode.Ok;
     }
 }

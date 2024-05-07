@@ -4,7 +4,7 @@ using OpenDDSharp.DDS;
 
 namespace DDSService.Imp.Adapters;
 
-public class LocationDataWriterAdapter : IGenericDataWriter<Location>
+public class LocationDataWriterAdapter : IGenericDataWriter
 {
     private readonly LocationDataWriter _writer;
 
@@ -13,9 +13,9 @@ public class LocationDataWriterAdapter : IGenericDataWriter<Location>
         _writer = new LocationDataWriter(writer);
     }
 
-    public ReturnCode Write(Location data)
+    public ReturnCode Write(object data)
     {
-        _writer.Write(data);
+        _writer.Write((Location)data);
         return ReturnCode.Ok;
     }
 }

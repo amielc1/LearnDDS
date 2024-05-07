@@ -2,9 +2,9 @@
 
 namespace DDSService.Interface
 {
-    public interface IGenericDataWriter<T>
+    public interface IGenericDataWriter
     {
-        ReturnCode Write(T data);
+        ReturnCode Write(object data);
     }
 }
 
