@@ -29,9 +29,6 @@ namespace CombatSystemDemo.Devices
             IGenericDataWriter<Mission> WriterFactory(DataWriter writer) => new MissionDataWriterAdapter(writer);
             _writer = new GenericWriterCreator<MissionTypeSupportAdapter, Mission>(WriterFactory);
 
-
-            IGenericDataReader<Location> ReaderFactory(DataReader reader) => new LocationDataReaderAdapter(reader);
-            _reader = new GenericReaderCreator<LocationTypeSupportAdapter, Location>(ReaderFactory);
  
 
             _config = new DdsConfiguration
@@ -39,13 +36,11 @@ namespace CombatSystemDemo.Devices
                 Topic = "LocationTopic"
             };
             _ddsService = new OpenDdsService(_config);
-            _subscriber = new DdsSubscriber(_ddsService, _reader);
             _publisher = new DdsPublisher(_ddsService, _writer);
         }
 
         public async Task Import()
         {
-            await _subscriber.Subscribe(_config.Topic, OnMessageArrived);
             Console.WriteLine($"C4I Subscribe to {_config.Topic}");
         }
 
@@ -53,7 +48,7 @@ namespace CombatSystemDemo.Devices
         { 
                  var msg = new Mission()
                 {
-                    Key = counter,
+                    Key = counter++,
                     Name = $"{counter} mission",
                     Description = "Fire Command mission ",
                     Status = "to fire"

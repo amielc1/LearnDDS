@@ -6,7 +6,7 @@ using OpenDDSharp.OpenDDS.DCPS;
 
 namespace DDSService;
 
-public delegate IGenericDataReader<TData> DataReaderFactory<TData>(DataReader reader);
+public delegate IGenericDataReader DataReaderFactory(DataReader reader);
 
 public delegate IGenericDataWriter<TData> DataWriterFactory<TData>(DataWriter writer);
 

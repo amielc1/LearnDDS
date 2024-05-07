@@ -3,19 +3,18 @@ using OpenDDSharp.DDS;
 
 namespace DDSService
 {
-    public class GenericReaderCreator<TTypeSupport, TData> : IDataReaderCreator
+    public class GenericReaderCreator<TTypeSupport> : IDataReaderCreator
         where TTypeSupport : ITypeSupport, new()
-        where TData : class
     {
         public event EventHandler<object> DataReceived;
         private Subscriber _subscriber;
         private DomainParticipant _participant;
         private readonly CancellationTokenSource _cancellationTokenSource = new();
-        private readonly GenericListener<TData> _listener;
+        private readonly GenericListener _listener;
 
-        public GenericReaderCreator(DataReaderFactory<TData> factory)
+        public GenericReaderCreator(DataReaderFactory factory)
         {
-            _listener = new GenericListener<TData>(factory);
+            _listener = new GenericListener(factory);
             _listener.DataReceived += (s, e) => DataReceived?.Invoke(s, e);
         }
 

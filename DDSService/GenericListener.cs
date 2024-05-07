@@ -3,31 +3,22 @@ using OpenDDSharp.DDS;
 
 namespace DDSService
 {
-     
-    public class GenericListener<TData> : DataReaderListener
-        where TData : class
-    {
-        private readonly DataReaderFactory<TData> _factory;
-        public event EventHandler<TData> DataReceived = delegate { };
-        private IGenericDataReader<TData> _genericDataReader;
 
-        public GenericListener(DataReaderFactory<TData> factory)
+    public class GenericListener : DataReaderListener
+    {
+        private readonly DataReaderFactory _factory;
+        public event EventHandler<object> DataReceived = delegate { };
+        private IGenericDataReader _genericDataReader;
+
+        public GenericListener(DataReaderFactory factory)
         {
             _factory = factory;
         }
 
         protected override void OnDataAvailable(DataReader reader)
         {
-            //if (_genericDataReader.GetType().Name == "MissionDataReaderAdapter")
-            //{
-            //    int t = 0; 
-            //} 
-           
             if (_genericDataReader == null) throw new InvalidOperationException("Invalid DataReader type.");
-
-            var receivedData = new List<TData>();
-            var receivedInfo = new List<SampleInfo>();
-             _genericDataReader.Take(receivedData, receivedInfo, DataReceived);
+            _genericDataReader.Take(DataReceived);
         }
 
         protected override void OnRequestedDeadlineMissed(DataReader reader, RequestedDeadlineMissedStatus status)

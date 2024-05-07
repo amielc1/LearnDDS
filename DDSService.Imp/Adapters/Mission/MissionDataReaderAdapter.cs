@@ -3,17 +3,16 @@ using MissionModule;
 using OpenDDSharp.DDS;
 
 namespace DDSService.Imp.Adapters;
- 
-public class MissionDataReaderAdapter : IGenericDataReader<Mission>
-{
-    private readonly MissionDataReader _reader;
 
+public class MissionDataReaderAdapter : IGenericDataReader
+{
+    private readonly MissionDataReader _reader; 
     public MissionDataReaderAdapter(DataReader reader)
     {
         _reader = new MissionDataReader(reader); 
     }
 
-    public ReturnCode Take(List<Mission> dataValues, List<SampleInfo> sampleInfos, EventHandler<Mission> DataReceived)
+    public ReturnCode Take(EventHandler<object> DataReceived)
     {
         var receivedData = new List<Mission>();
         var receivedInfo = new List<SampleInfo>();
@@ -26,8 +25,8 @@ public class MissionDataReaderAdapter : IGenericDataReader<Mission>
                 if (!info.ValidData) continue;
                 var index = receivedInfo.IndexOf(info);
                 var mission = receivedData[index];
-                DataReceived.Invoke(this,mission);
-            }
+                DataReceived(this, mission);
+            } 
         }
         else
         {

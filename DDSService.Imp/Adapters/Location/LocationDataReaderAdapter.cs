@@ -3,7 +3,7 @@ using MissionModule;
 using OpenDDSharp.DDS; 
 namespace DDSService.Imp.Adapters;
 
-public class LocationDataReaderAdapter : IGenericDataReader<Location>
+public class LocationDataReaderAdapter : IGenericDataReader
 {
     private readonly LocationDataReader _reader;
 
@@ -12,7 +12,7 @@ public class LocationDataReaderAdapter : IGenericDataReader<Location>
         _reader =  new LocationDataReader(reader);  
     }
 
-    public ReturnCode Take(List<Location> dataValues, List<SampleInfo> sampleInfos, EventHandler<Location> DataReceived)
+    public ReturnCode Take(EventHandler<object> DataReceived)
     {
         var receivedData = new List<Location>();
         var receivedInfo = new List<SampleInfo>();

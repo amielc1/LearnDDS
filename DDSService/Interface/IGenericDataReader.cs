@@ -2,7 +2,7 @@
 
 namespace DDSService.Interface;
 
-public interface IGenericDataReader<T>
+public interface IGenericDataReader
 {
-    ReturnCode Take(List<T> dataValues, List<SampleInfo> sampleInfos,EventHandler<T> dataReceived);
+    ReturnCode Take(EventHandler<object> dataReceived);
 }

@@ -4,7 +4,7 @@ using OpenDDSharp.DDS;
 
 namespace DDSService.Imp.Adapters;
 
-public class FiringCommandDataReaderAdapter : IGenericDataReader<FiringCommand>
+public class FiringCommandDataReaderAdapter : IGenericDataReader
 {
     private readonly FiringCommandDataReader _reader;
 
@@ -13,7 +13,7 @@ public class FiringCommandDataReaderAdapter : IGenericDataReader<FiringCommand>
         _reader = (FiringCommandDataReader)reader; // Assume safe casting based on your system's design
     }
 
-    public ReturnCode Take(List<FiringCommand> dataValues, List<SampleInfo> sampleInfos, EventHandler<FiringCommand> DataReceived)
+    public ReturnCode Take(EventHandler<object> DataReceived)
     {
         var receivedData = new List<FiringCommand>();
         var receivedInfo = new List<SampleInfo>();
