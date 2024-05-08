@@ -9,11 +9,12 @@ using OpenDDSharp.DDS;
 using System;
 using System.Threading.Tasks;
 
-namespace CombatSystemDemo.Devices
+namespace CombatSystemDemo
 {
     public class C4I
     {
-        static int counter = 0; 
+        static int missionCounter = 0;
+        static int locationCounter = 1000;
         private readonly IDdsService _ddsService;
         private readonly DdsConfiguration _config;
         private readonly IPublisher _missionpublisher;
@@ -49,20 +50,20 @@ namespace CombatSystemDemo.Devices
 
         private void OnFireArrived(object sender, object e)
         {
-            Console.WriteLine($"{DateTime.Now.ToLongTimeString()} Launcher RCV Fire  {((MissionModule.FiringCommand)e).Key} ");
+            Console.WriteLine($"{DateTime.Now.ToLongTimeString()} Launcher RCV Fire  {((FiringCommand)e).Key} ");
         }
 
         public async Task ExportMission()
         {
-            var msg = new MissionModule.Mission()
+            var msg = new Mission()
             {
-                Key = counter++,
-                Name = $"{counter} mission",
+                Key = missionCounter++,
+                Name = $"{missionCounter} mission",
                 Description = "Fire Command mission ",
                 Status = "to fire"
             };
             await _missionpublisher.Publish(MissionTopic, msg);
-            await Task.Delay(100);
+            await Task.Delay(2000);
             Console.WriteLine($"C4I SEND Mission {msg.Name} to topic {MissionTopic}");
 
         }
@@ -70,15 +71,15 @@ namespace CombatSystemDemo.Devices
         {
             var msg = new Location()
             {
-                Key = counter,
-                Latitude = counter,
-                Longtitude = counter,
-                Altitude = counter,
+                Key = locationCounter++,
+                Latitude = locationCounter,
+                Longtitude = locationCounter,
+                Altitude = locationCounter,
             };
             await _locationpublisher.Publish(LocationTopic, msg);
-            await Task.Delay(100);
+            await Task.Delay(2000);
             Console.WriteLine($"C4I SEND Location {msg.Key} to topic {LocationTopic}");
         }
-    } 
+    }
 }
 

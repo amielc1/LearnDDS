@@ -14,11 +14,4 @@
     <ProjectReference Include="..\MessageBroker.Core\MessageBroker.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="rtps.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

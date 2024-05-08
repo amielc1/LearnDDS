@@ -12,4 +12,11 @@
     <ProjectReference Include="..\DDSService\DDSService.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="rtps.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

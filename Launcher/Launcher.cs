@@ -10,6 +10,7 @@ namespace CombatSystemDemo.Devices;
 
 public class Launcher
 {
+
     static int counter = 2000;
     private readonly DdsConfiguration _config;
     private readonly ISubscriber _missionSubscriber;
@@ -22,7 +23,7 @@ public class Launcher
     public Launcher()
     {
         IGenericDataWriter FireWriterFactory(DataWriter writer) => new FiringCommandDataWriterAdapter(writer);
-        IDataWriterCreator _firewriter = new GenericWriterCreator<FiringCommandTypeSupportAdapter>(FireWriterFactory);
+        IDataWriterCreator fireWriter = new GenericWriterCreator<FiringCommandTypeSupportAdapter>(FireWriterFactory);
         IDataReaderCreator missionReader = new GenericReaderCreator<MissionTypeSupportAdapter>(reader => new MissionDataReaderAdapter(reader));
         IDataReaderCreator locationReader = new GenericReaderCreator<LocationTypeSupportAdapter>(reader => new LocationDataReaderAdapter(reader));
         _config = new DdsConfiguration();
@@ -30,8 +31,7 @@ public class Launcher
         var participant = ddsService.CreateParticipant();
         _missionSubscriber = new DdsSubscriber(participant, missionReader);
         _locationSubscriber = new DdsSubscriber(participant, locationReader);
-        _firePublisher = new DdsPublisher(participant, _firewriter);
-
+        _firePublisher = new DdsPublisher(participant, fireWriter);
     }
 
     public async Task Import()
@@ -52,7 +52,7 @@ public class Launcher
                 WeaponType = counter,
             };
             await _firePublisher.Publish(FireTopic, msg);
-            await Task.Delay(100);
+            await Task.Delay(1000);
             Console.WriteLine($"Launcher SEND Fire Command {msg.Key} to topic {LocationTopic}");
         }
     }
@@ -62,7 +62,7 @@ public class Launcher
         Console.WriteLine($"{DateTime.Now.ToLongTimeString()} Launcher RCV Location  {((MissionModule.Location)e).Key} ");
     }
 
-    public void OnMissionArrived(object sender, object e)
+    public void OnMissionArrived(object? sender, object e)
     {
         Console.WriteLine($"{DateTime.Now.ToLongTimeString()} Launcher RCV Mission  {((MissionModule.Mission)e).Name} ");
     }
