@@ -17,15 +17,14 @@ namespace HelloWorldPublisher
             var dpf = ParticipantService.Instance.GetDomainParticipantFactory(
                 new string[]
                 {
-                    "-DCPSConfigFile", "rtps.ini", 
+                    "-DCPSConfigFile", "rtps_pub.ini", 
                     //"-DCPSDebugLevel", "10",
-                    //"-ORBLogFile", "LogFile.log",
+                    //"-ORBLogFile", "HelloWorldPublisher.log",
                     //"-ORBDebugLevel", "10"
                 }
             );
 
-
-            InitDDS(dpf, "Amiel", "participant2_transport");
+            InitDDS(dpf, "Amiel", null);
             InitDDS(dpf, "Neria", null);//"config_5000");
 
             Console.WriteLine("Press a key to exit...");
@@ -40,14 +39,14 @@ namespace HelloWorldPublisher
 
         private static void InitDDS(DomainParticipantFactory dpf, string participantName, string configName)
         {
-            var participant = dpf.CreateParticipant(43);
+            var participant = dpf.CreateParticipant(42);
 
-            Console.WriteLine($"Creating participant {participantName} for domain 43, participant id {participant.GetHashCode()}");
-         
             if (participant == null)
             {
                 throw new Exception("Could not create the participant");
             }
+
+            Console.WriteLine($"Creating participant {participantName} for domain 43, participant id {participant.GetHashCode()}");
 
             if (!string.IsNullOrEmpty(configName))
             {

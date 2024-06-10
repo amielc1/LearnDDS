@@ -3,7 +3,6 @@ using OpenDDSharp;
 using OpenDDSharp.DDS;
 using OpenDDSharp.OpenDDS.DCPS;
 using System;
-using System.Collections.Generic;
 
 namespace HelloWorldSubscriber
 {
@@ -13,8 +12,9 @@ namespace HelloWorldSubscriber
         {
             Ace.Init();
 
-            DomainParticipantFactory dpf = ParticipantService.Instance.GetDomainParticipantFactory("-DCPSConfigFile", "rtps.ini", "-DCPSDebugLevel", "10", "-ORBLogFile", "LogFile.log", "-ORBDebugLevel", "10");
-            DomainParticipant participant = dpf.CreateParticipant(43);
+            DomainParticipantFactory dpf = ParticipantService.Instance.GetDomainParticipantFactory("-DCPSConfigFile", "rtps_sub.ini");
+            
+            DomainParticipant participant = dpf.CreateParticipant(42);
             if (participant == null)
             {
                 throw new Exception("Could not create the participant");
