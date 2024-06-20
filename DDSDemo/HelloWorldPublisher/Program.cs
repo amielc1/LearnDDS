@@ -87,8 +87,8 @@ namespace HelloWorldPublisher
 
             MessageDataWriter messageWriter = new(writer);
 
-            Console.WriteLine("Waiting for a subscriber...");
-       
+            Console.WriteLine($"Create MessageDataWriter on Topic {topic.Name}, Domain {topic.Participant.DomainId}");
+             
             Console.WriteLine("Subscriber found, writting data....");
             Task.Run(() =>
             {

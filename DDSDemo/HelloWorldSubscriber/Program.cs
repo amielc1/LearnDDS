@@ -45,7 +45,7 @@ namespace HelloWorldSubscriber
                 throw new Exception("Could not create the message data reader");
             }
             MessageDataReader messageReader = new(reader);
-
+            Console.WriteLine($"Create MessageDataReader on Topic {topic.Name}, Domain {topic.Participant.DomainId}");
             var listener = new GenericListener();
             listener.DataReceived += (sender, message) =>
             {
