@@ -3,6 +3,11 @@
 1. [DDS Intro](https://youtu.be/ybfSHEArDxY?si=m-Fl0el_xE-R7Ljn)
 2. [DDS IDL](https://youtu.be/eZ-5had7gH8?si=hHS23R7JOBZlHV5Z)
 3. [DDS Simple Example](https://youtu.be/tXH_zsNU704?si=kDCcvT6DNRIUuFWD)
+   
+   **RTPS Relay**
+   
+1. [Open DDS - RTPS Relay install](https://youtu.be/Jw_G_huVh3I)
+2. [Open DDS - RTPS Relay Usage](https://youtu.be/yRQo_ZAY754)
   
 #  **Getting Started**
 
