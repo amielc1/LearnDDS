@@ -46,12 +46,12 @@ namespace HelloWorldPublisher
                 throw new Exception("Could not create the participant");
             }
 
-            Console.WriteLine($"Creating participant {participantName} for domain 43, participant id {participant.GetHashCode()}");
+            Console.WriteLine($"Creating participant {participantName} for domain {participant.DomainId}, participant id {participant.GetHashCode()}");
 
-            if (!string.IsNullOrEmpty(configName))
-            {
-                TransportRegistry.Instance.BindConfig(configName, participant);
-            }
+            //if (!string.IsNullOrEmpty(configName))
+            //{
+            //    TransportRegistry.Instance.BindConfig(configName, participant);
+            //}
 
 
             MessageTypeSupport support = new();
@@ -88,8 +88,20 @@ namespace HelloWorldPublisher
             MessageDataWriter messageWriter = new(writer);
 
             Console.WriteLine($"Create MessageDataWriter on Topic {topic.Name}, Domain {topic.Participant.DomainId}");
-             
+
+
+            Console.WriteLine("Waiting for a subscriber...");
+
+            PublicationMatchedStatus status = new PublicationMatchedStatus();
+            do
+            {
+                writer.GetPublicationMatchedStatus(ref status);
+                System.Threading.Thread.Sleep(500);
+            }
+            while (status.CurrentCount < 1);
+
             Console.WriteLine("Subscriber found, writting data....");
+
             Task.Run(() =>
             {
                 var counter = 0;
