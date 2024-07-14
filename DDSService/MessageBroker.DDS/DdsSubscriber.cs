@@ -1,5 +1,4 @@
-﻿
-using DDSService.Interface;
+﻿using DDSService.Interface;
 using MessageBroker.Core.Interfaces;
 using OpenDDSharp.DDS;
 
@@ -9,6 +8,8 @@ public class DdsSubscriber : ISubscriber
 {
     private readonly IDataReaderCreator _dataReaderCreator;
     private readonly DomainParticipant _participant;
+    private EventHandler<object>? _dataReceivedHandler;
+
     public DdsSubscriber(DomainParticipant participant, IDataReaderCreator dataReaderCreator)
     {
         _dataReaderCreator = dataReaderCreator;
@@ -20,7 +21,8 @@ public class DdsSubscriber : ISubscriber
         try
         {
             _dataReaderCreator.Subscribe(_participant, topic);
-            _dataReaderCreator.DataReceived += (s, e) => onMessageArrived(s, e);
+            _dataReceivedHandler = (s, e) => onMessageArrived(s, e);
+            _dataReaderCreator.DataReceived += _dataReceivedHandler;
             return Task.CompletedTask;
         }
         catch (Exception e)
@@ -34,6 +36,11 @@ public class DdsSubscriber : ISubscriber
     {
         try
         {
+            if (_dataReceivedHandler != null)
+            {
+                _dataReaderCreator.DataReceived -= _dataReceivedHandler;
+                _dataReceivedHandler = null;
+            }
             _dataReaderCreator.UnSubscribe();
             return Task.CompletedTask;
         }
