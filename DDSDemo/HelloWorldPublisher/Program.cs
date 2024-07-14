@@ -25,7 +25,7 @@ namespace HelloWorldPublisher
             );
 
             InitDDS(dpf, "Amiel", null);
-            InitDDS(dpf, "Neria", null);//"config_5000");
+            //InitDDS(dpf, "Neria", null);//"config_5000");
 
             Console.WriteLine("Press a key to exit...");
             Console.Read();
@@ -72,12 +72,7 @@ namespace HelloWorldPublisher
             if (publisher == null)
             {
                 throw new Exception("Could not create the publisher");
-            }
-
-            //if (!string.IsNullOrEmpty(configName))
-            //{
-            //    TransportRegistry.Instance.BindConfig(configName, participant);
-            //}
+            } 
 
             var writer = publisher.CreateDataWriter(topic);
             if (writer == null)
@@ -88,7 +83,6 @@ namespace HelloWorldPublisher
             MessageDataWriter messageWriter = new(writer);
 
             Console.WriteLine($"Create MessageDataWriter on Topic {topic.Name}, Domain {topic.Participant.DomainId}");
-
 
             Console.WriteLine("Waiting for a subscriber...");
 
