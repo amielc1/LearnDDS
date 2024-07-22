@@ -1,4 +1,4 @@
-[common]
+﻿[common]
 DCPSGlobalTransportConfig=myconfig
 DCPSDefaultDiscovery=disc
 [config/myconfig]
@@ -18,4 +18,3 @@ SedpMulticast=0
 SpdpSendAddrs=10.10.77.125:12345
 SpdpLocalAddress=10.10.77.125:12355
 SedpLocalAddress=10.10.77.125:12356
-

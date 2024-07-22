@@ -102,7 +102,8 @@ namespace HelloWorldPublisher
 
                 while (true)
                 {
-                    var message = $"{counter} {participantName}: Hello, I love you, won't you tell me your name?";
+                     var message = $"{counter} {messageWriter.Topic.Name} {messageWriter.Topic.Participant.DomainId} {participantName}: Hello, I love you, won't you tell me your name?";
+                    //var message = $"{counter} {participantName}: Hello, I love you, won't you tell me your name?";
                     messageWriter.Write(new Message { Content = message });
                     Console.WriteLine(message);
                     counter++;

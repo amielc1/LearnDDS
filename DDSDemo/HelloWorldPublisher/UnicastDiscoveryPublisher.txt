@@ -1,4 +1,4 @@
-[common]
+﻿[common]
 DCPSGlobalTransportConfig=myconfig
 DCPSDefaultDiscovery=disc # default discorevy 
 
@@ -19,5 +19,3 @@ SedpMulticast=0
 SpdpSendAddrs=10.10.77.125:12355 # sedp in the same addr
 SpdpLocalAddress=10.10.77.125:12345
 SedpLocalAddress=10.10.77.125:12346
-
-# gal@omniconSystems.com

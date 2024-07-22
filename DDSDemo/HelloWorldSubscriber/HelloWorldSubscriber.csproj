@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <None Update="rtps_sub.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

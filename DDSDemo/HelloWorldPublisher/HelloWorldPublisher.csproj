@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <None Update="rtps_pub.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Remove="Properties\launchSettings.json" />
   </ItemGroup>
