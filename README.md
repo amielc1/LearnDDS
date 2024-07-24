@@ -13,6 +13,7 @@
 
    **Unicast Discovery & Data**
 1. [Open DDS - Unicast Discovery & Data](https://youtu.be/7L61qR_YLJs)
+2. [Open DDS - Unicast Discovery & Data - Article](https://docs.google.com/document/d/1SC5oCQBadH-TxyNGHg-B_7Gs8j5Mdm2NGzMBxtsRqWc/edit?usp=sharing)
   
 #  **Getting Started**
 
