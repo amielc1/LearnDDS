@@ -26,3 +26,11 @@ PeriodicDirectedSpdp=1
 
 
 RtpsRelay.EXE -Id relay1 -UserData relay1 -DCPSConfigFile relay1.ini -ApplicationDomain 42 -VerticalAddress 127.0.0.1:4444 -HorizontalAddress 127.0.0.1:11444 -MetaDiscoveryAddress 127.0.0.1:8082 -ORBLogFile relay1.log 
+
+#multicast
+[common]
+DCPSGlobalTransportConfig=$file
+DCPSDefaultDiscovery=DEFAULT_RTPS
+
+[transport/the_rtps_transport]
+transport_type=rtps_udp
