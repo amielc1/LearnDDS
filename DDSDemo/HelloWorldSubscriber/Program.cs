@@ -49,7 +49,7 @@ namespace HelloWorldSubscriber
             var listener = new GenericListener();
             listener.DataReceived += (sender, message) =>
             {
-                Console.WriteLine(message);
+                Console.WriteLine($" <= {message}");
             };
 
             reader.SetListener(listener);
