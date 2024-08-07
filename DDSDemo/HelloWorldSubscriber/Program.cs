@@ -12,8 +12,15 @@ namespace HelloWorldSubscriber
         {
             Ace.Init();
 
-            DomainParticipantFactory dpf = ParticipantService.Instance.GetDomainParticipantFactory("-DCPSConfigFile", "rtps_sub.ini");
-            
+            var dpf = ParticipantService.Instance.GetDomainParticipantFactory(
+              new string[]
+              {
+                    "-DCPSConfigFile", "rtps_sub.ini",
+                    "-DCPSDebugLevel", "10",
+                    "-ORBLogFile", "HelloWorldSubscriber.log",
+                    "-ORBDebugLevel", "10"
+              }
+          );
             DomainParticipant participant = dpf.CreateParticipant(42);
             if (participant == null)
             {

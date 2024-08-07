@@ -18,9 +18,9 @@ namespace HelloWorldPublisher
                 new string[]
                 {
                     "-DCPSConfigFile", "rtps_pub.ini", 
-                    //"-DCPSDebugLevel", "10",
-                    //"-ORBLogFile", "HelloWorldPublisher.log",
-                    //"-ORBDebugLevel", "10"
+                    "-DCPSDebugLevel", "10",
+                    "-ORBLogFile", "HelloWorldPublisher.log",
+                    "-ORBDebugLevel", "10"
                 }
             );
 
@@ -86,13 +86,13 @@ namespace HelloWorldPublisher
 
             Console.WriteLine("Waiting for a subscriber...");
 
-            PublicationMatchedStatus status = new PublicationMatchedStatus();
-            do
-            {
-                writer.GetPublicationMatchedStatus(ref status);
-                System.Threading.Thread.Sleep(500);
-            }
-            while (status.CurrentCount < 1);
+            //PublicationMatchedStatus status = new PublicationMatchedStatus();
+            //do
+            //{
+            //    writer.GetPublicationMatchedStatus(ref status);
+            //    System.Threading.Thread.Sleep(500);
+            //}
+            //while (status.CurrentCount < 1);
 
             Console.WriteLine("Subscriber found, writting data....");
 
