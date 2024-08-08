@@ -4,13 +4,11 @@ using DDSService.Imp.Adapters;
 using DDSService.Interface;
 using DDSService.MessageBroker.DDS;
 using MessageBroker.Core.Interfaces;
-using OpenDDSharp.DDS;
 
 namespace CombatSystemDemo.Devices;
 
 public class Launcher
 {
-
     static int counter = 2000;
     private readonly DdsConfiguration _config;
     private readonly ISubscriber _missionSubscriber;
@@ -22,12 +20,13 @@ public class Launcher
 
     public Launcher()
     {
-        IGenericDataWriter FireWriterFactory(DataWriter writer) => new FiringCommandDataWriterAdapter(writer);
-        IDataWriterCreator fireWriter = new GenericWriterCreator<FiringCommandTypeSupportAdapter>(FireWriterFactory);
+        IDataWriterCreator fireWriter = new GenericWriterCreator<FiringCommandTypeSupportAdapter>(writer => new FiringCommandDataWriterAdapter(writer));
         IDataReaderCreator missionReader = new GenericReaderCreator<MissionTypeSupportAdapter>(reader => new MissionDataReaderAdapter(reader));
         IDataReaderCreator locationReader = new GenericReaderCreator<LocationTypeSupportAdapter>(reader => new LocationDataReaderAdapter(reader));
+        
         _config = new DdsConfiguration();
         IDdsService ddsService = DdsService.GetInstance(_config);
+       
         var participant = ddsService.CreateParticipant();
         _missionSubscriber = new DdsSubscriber(participant, missionReader);
         _locationSubscriber = new DdsSubscriber(participant, locationReader);

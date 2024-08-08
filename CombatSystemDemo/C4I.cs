@@ -5,7 +5,6 @@ using DDSService.Interface;
 using DDSService.MessageBroker.DDS;
 using MessageBroker.Core.Interfaces;
 using MissionModule;
-using OpenDDSharp.DDS;
 using System;
 using System.Threading.Tasks;
 
@@ -27,19 +26,16 @@ namespace CombatSystemDemo
 
         public C4I()
         {
-            IGenericDataWriter MissionWriterFactory(DataWriter writer) => new MissionDataWriterAdapter(writer);
-            IDataWriterCreator _missionwriter = new GenericWriterCreator<MissionTypeSupportAdapter>(MissionWriterFactory);
-            IGenericDataWriter LocationWriterFactory(DataWriter writer) => new LocationDataWriterAdapter(writer);
-            IDataWriterCreator _locationwriter = new GenericWriterCreator<LocationTypeSupportAdapter>(LocationWriterFactory);
-
-            IDataReaderCreator fireReader = new GenericReaderCreator<FiringCommandTypeSupportAdapter>(reader => new FiringCommandDataReaderAdapter(reader));
+            IDataWriterCreator _missionwriter = new GenericWriterCreator<MissionTypeSupportAdapter>(writer => new MissionDataWriterAdapter(writer));
+            IDataWriterCreator _locationwriter = new GenericWriterCreator<LocationTypeSupportAdapter>(writer => new LocationDataWriterAdapter(writer));
+            IDataReaderCreator _fireReader = new GenericReaderCreator<FiringCommandTypeSupportAdapter>(reader => new FiringCommandDataReaderAdapter(reader));
 
             _config = new DdsConfiguration();
             _ddsService = DdsService.GetInstance(_config);
             var participant = _ddsService.CreateParticipant();
             _missionpublisher = new DdsPublisher(participant, _missionwriter);
             _locationpublisher = new DdsPublisher(participant, _locationwriter);
-            _fireSubscriber = new DdsSubscriber(participant, fireReader);
+            _fireSubscriber = new DdsSubscriber(participant, _fireReader);
 
         }
 
