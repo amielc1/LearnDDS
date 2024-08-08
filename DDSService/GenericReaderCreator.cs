@@ -1,4 +1,5 @@
 ﻿using DDSService.Interface;
+using DDSService.Model;
 using OpenDDSharp.DDS;
 
 namespace DDSService
@@ -11,9 +12,11 @@ namespace DDSService
         private DomainParticipant _participant;
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private readonly GenericListener _listener;
+        private readonly IQosConfigService? _qosConfig;
 
-        public GenericReaderCreator(DataReaderFactory factory)
+        public GenericReaderCreator(DataReaderFactory factory, IQosConfigService? qosConfig = null)
         {
+            _qosConfig = qosConfig;
             _listener = new GenericListener(factory);
             _listener.DataReceived += (s, e) => DataReceived?.Invoke(s, e);
         }

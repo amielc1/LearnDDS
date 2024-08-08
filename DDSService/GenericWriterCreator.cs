@@ -11,9 +11,11 @@ public class GenericWriterCreator<TTypeSupport> : IDataWriterCreator
     private Topic _topicInstance;
     private IGenericDataWriter _dataWriter;
     private readonly DataWriterFactory _factory;
+    private readonly IQosConfigService? _qosConfig;
 
-    public GenericWriterCreator(DataWriterFactory factory)
+    public GenericWriterCreator(DataWriterFactory factory, IQosConfigService? qosConfig = null)
     {
+        _qosConfig = qosConfig; 
         _factory = factory;
     }
 

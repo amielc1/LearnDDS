@@ -26,11 +26,14 @@ namespace CombatSystemDemo
 
         public C4I()
         {
-            IDataWriterCreator _missionwriter = new GenericWriterCreator<MissionTypeSupportAdapter>(writer => new MissionDataWriterAdapter(writer));
-            IDataWriterCreator _locationwriter = new GenericWriterCreator<LocationTypeSupportAdapter>(writer => new LocationDataWriterAdapter(writer));
-            IDataReaderCreator _fireReader = new GenericReaderCreator<FiringCommandTypeSupportAdapter>(reader => new FiringCommandDataReaderAdapter(reader));
-
             _config = new DdsConfiguration();
+            _config.QosConfig = new IQosConfigService();
+
+
+            IDataWriterCreator _missionwriter = new GenericWriterCreator<MissionTypeSupportAdapter>(writer => new MissionDataWriterAdapter(writer));
+            IDataWriterCreator _locationwriter = new GenericWriterCreator<LocationTypeSupportAdapter>(writer => new LocationDataWriterAdapter(writer), _config.QosConfig);
+            IDataReaderCreator _fireReader = new GenericReaderCreator<FiringCommandTypeSupportAdapter>(reader => new FiringCommandDataReaderAdapter(reader), _config.QosConfig);
+
             _ddsService = DdsService.GetInstance(_config);
             var participant = _ddsService.CreateParticipant();
             _missionpublisher = new DdsPublisher(participant, _missionwriter);
